@@ -60,7 +60,7 @@ function emailOnSubmit(e) {
       </tr>
       <tr>
         <td><strong>Address:</strong></td>
-        <td>${address}</td>
+        <td>${address.replace(/(?:\r\n|\r|\n)/g, '<br>')}</td>
       </tr>
       <tr>
         <td><strong>Phone:</strong></td>
@@ -75,7 +75,7 @@ function emailOnSubmit(e) {
     <table>
       <tr>
         <td><strong>Details:</strong></td>
-        <td>${caseDetails}</td>
+        <td>${caseDetails.replace(/(?:\r\n|\r|\n)/g, '<br>')}</td>
       </tr>
       <tr>
         <td><strong>Repeat case?:</strong></td>
