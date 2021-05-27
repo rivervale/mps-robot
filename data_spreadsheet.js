@@ -31,11 +31,13 @@ function updateForm() {
   caseSelector.setChoiceValues(weeksCases);
 
   // Move template immediately if case details are included on registration
-  Utilities.sleep(20000);
+  Utilities.sleep(30000);
   let registrationSheet = ss.getSheetByName('Registration responses');
   let lastCaseDetails = registrationSheet.getRange(registrationSheet.getLastRow(),6).getValue();
+  console.log('Last case details: ' + lastCaseDetails);
   if (lastCaseDetails != '') {
     let lastCaseName = toTitleCase(registrationSheet.getRange(registrationSheet.getLastRow(),3).getValue());
+    console.log('Last case name: ' + lastCaseName);
     let matchingFiles = DriveApp.getFolderById('1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA').searchFiles("title contains '" + lastCaseName +"'");
     if (matchingFiles.hasNext()) {
       let date = new Date();
@@ -43,11 +45,14 @@ function updateForm() {
       let year = Utilities.formatDate(date, 'GMT+8', 'yyyy');
       let lastCaseNumber = registrationSheet.getRange(registrationSheet.getLastRow(),1).getValue();
       let workingDoc = matchingFiles.next();
+      console.log('Found file: ' + workingDoc.getName());
       let openDoc = DocumentApp.openById(workingDoc.getId()); //open the doc for editing
       let body = openDoc.getBody();
       body.replaceText('{{Case_number}}', lastCaseNumber);
       workingDoc.setName('Agency' + year + month + lastCaseNumber + '(subject)-' + lastCaseName);
       moveFiles(workingDoc.getId(), '1SB1Y_5P2Kc-oIPAvzeIs3aurqIpT4BzP');
+    } else {
+      console.log('Failed to find file');
     }
   }
 }

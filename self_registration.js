@@ -24,9 +24,9 @@ function emailOnSubmit(e) {
   let gender = items[3].getResponse();
   let phoneNumber = items[4].getResponse();
   let emailAddress = items[5].getResponse().toLowerCase();
-  let repeatCustomer = items[6].getResponse().slice(0, 3);
+  let repeatCustomer = items[6].getResponse().slice(0, 3).trim();
   let caseDetails = items[7].getResponse().trim();
-  let supportingDocs = items[8].getResponse().slice(0, 3);
+  let supportingDocs = items[8].getResponse().slice(0, 3).trim();
 
   // Link to spreadsheet with case responses
   let caseResponsesUrl =
