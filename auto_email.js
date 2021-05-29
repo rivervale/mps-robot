@@ -1,18 +1,3 @@
-function moveFiles(sourceFileId, targetFolderId) {
-  let file = DriveApp.getFileById(sourceFileId);
-  let folder = DriveApp.getFolderById(targetFolderId);
-  file.moveTo(folder);
-}
-
-function toTitleCase(str) {
-  return str.replace(
-    /\w\S*/g,
-    function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    }
-  );
-}
-
 function autoEmail() {
   // Initialising variables
   let mailTo = '';
@@ -39,7 +24,7 @@ function autoEmail() {
   `;
 
   // Pull files in the auto-email folder
-  let matchingFiles = DriveApp.getFolderById('1Q7qCZ-4t_JcFNkbD2mdYhk63dEQaB44e').getFiles();
+  let matchingFiles = DriveApp.getFolderById('1oV0J-u7AWjwxnByegeNf3JJpOBoBs7_T').getFiles();
 
   // Iterate through each file
   while (matchingFiles.hasNext()) {
@@ -81,7 +66,7 @@ function autoEmail() {
     MailApp.sendEmail('', mailSubject, '', {
       name: 'CHUA Kheng Wee Louis',
       bcc: mailTo,
-      ccc: mailCc,
+      cc: mailCc,
       htmlBody: mailBody,
       attachments: [workingDoc.getAs('application/pdf')]
     });
@@ -98,4 +83,19 @@ function autoEmail() {
       workingDocBody.replaceText('----------', mailTo);
     }
   }
+}
+
+function moveFiles(sourceFileId, targetFolderId) {
+  let file = DriveApp.getFileById(sourceFileId);
+  let folder = DriveApp.getFolderById(targetFolderId);
+  file.moveTo(folder);
+}
+
+function toTitleCase(str) {
+  return str.replace(
+    /\w\S*/g,
+    function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    }
+  );
 }
