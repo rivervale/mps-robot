@@ -1,6 +1,8 @@
 NRIC:
-^[ST][0-9]{7}[A-Z]$
+^[ST]\d{7}[A-Z]$
 
 Address:
-^.*(Rivervale Drive|Rivervale Dr|Rivervale Street|Rivervale St|Rivervale Crescent|Rivervale Cres|Rivervale Lane|Rivervale Ln|Rivervale Walk|Punggol Road|Punggol Rd|Sengkang East|Sengkang E|Saint Anne's|St Anne's).*(\n|\r)+.*(\n|\r)*.*(\n|\r)*(Singapore \d{6})$
+(Rivervale (Drive|Dr|Street|St|Crescent|Cres|Lane|Ln|Walk|Wlk|Wk|Wl)|Punggol (Road|Rd)|Sengkang (East|E) (Avenue|Ave|Way|Wy|Drive|Dr)|(Saint|St|St\.) (Anne's|Annes|Annes') (Wood|Wd)).*((\n|\r).*)+(Singapore (53|54|55|82)\d{4})$
 
+Phone number:
+^[3689]\d{7}$
