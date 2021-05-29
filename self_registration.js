@@ -1,15 +1,3 @@
-function toTitleCase(str) {
-  return str.replace(/\w\S*/g, function (txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
-}
-
-function fixedEncodeURIComponent(str) {
-  return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
-    return '%' + c.charCodeAt(0).toString(16);
-  });
-}
-
 function emailOnSubmit(e) {
   // Get the responses triggered by On Form Submit
   let items = e.response.getItemResponses();
@@ -24,16 +12,27 @@ function emailOnSubmit(e) {
   let gender = items[3].getResponse();
   let phoneNumber = items[4].getResponse();
   let emailAddress = items[5].getResponse().toLowerCase();
-  let repeatCustomer = items[6].getResponse().slice(0, 3).trim();
+  let repeatCustomer = items[6].getResponse().slice(0, 3);
   let caseDetails = items[7].getResponse().trim();
-  let supportingDocs = items[8].getResponse().slice(0, 3).trim();
+  let supportingDocs = items[8].getResponse().slice(0, 3);
 
   // Link to spreadsheet with case responses
   let caseResponsesUrl =
     'https://docs.google.com/spreadsheets/d/1oUv4buU-IFAy9wqTDmdF_7eF40p8uTU_X8u16ujVKYU/edit#gid=1588694449';
 
   // Generate case acceptance link for use later
-  let acceptCaseUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfF6b96fzmTvVrSEcR_iDnp-eYhcTBZYdwSYxv-FtldchdyMQ/viewform?usp=pp_url&entry.259633438=${name.replace(/ /g, '+')}&entry.496077513=${nric}&entry.1209782293=${gender.replace(/ /g, '+')}&entry.529557127=${fixedEncodeURIComponent(address).replace(/%20/g, "+")}&entry.1922153968=${phoneNumber}&entry.1807123632=${emailAddress}&entry.501929772=${fixedEncodeURIComponent(caseDetails).replace(/%20/g, "+")}`;
+  let acceptCaseUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfF6b96fzmTvVrSEcR_iDnp-eYhcTBZYdwSYxv-FtldchdyMQ/viewform?usp=pp_url&entry.259633438=${name.replace(
+    / /g,
+    '+'
+  )}&entry.496077513=${nric}&entry.1209782293=${gender.replace(
+    / /g,
+    '+'
+  )}&entry.529557127=${fixedEncodeURIComponent(address).replace(
+    /%20/g,
+    '+'
+  )}&entry.1922153968=${phoneNumber}&entry.1807123632=${emailAddress}&entry.501929772=${fixedEncodeURIComponent(
+    caseDetails
+  ).replace(/%20/g, '+')}`;
 
   // Email a summary when someone fills in the form
   let mailRecipients = 'khengwee.chua@wp.sg';
@@ -121,5 +120,17 @@ function emailOnSubmit(e) {
     bcc: mailRecipientsBcc,
     htmlBody: mailBody,
     replyTo: mailSenderReplyTo,
+  });
+}
+
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}
+
+function fixedEncodeURIComponent(str) {
+  return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16);
   });
 }
