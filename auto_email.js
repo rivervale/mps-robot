@@ -172,19 +172,21 @@ function autoEmail() {
   let matchingFilesPrint = DriveApp.getFolderById(
     folderIdPrintAndCcByPost
   ).getFilesByType('application/pdf');
-  let matchingFilesPrintArray = [];
+  let matchingFilesPrintAccumulator = [];
   while (matchingFilesPrint.hasNext()) {
-    matchingFilesPrintArray.push(
+    matchingFilesPrintAccumulator.push(
       matchingFilesPrint.next().getAs('application/pdf')
     );
   }
-  MailApp.sendEmail({
-    name: 'MPS Robot',
-    subject: 'Please print and CC the resident(s) by post',
-    to: emailAddressSA,
-    body: 'Please print and CC the resident(s) by post',
-    attachments: matchingFilesPrintArray,
-  });
+  if (matchingFilesPrintAccumulator.length != 0) {
+    MailApp.sendEmail({
+      name: 'MPS Robot',
+      subject: 'Please print and CC the resident(s) by post',
+      to: emailAddressSA,
+      body: 'Please print and CC the resident(s) by post',
+      attachments: matchingFilesPrintAccumulator,
+    });
+  }
 }
 
 function moveFiles(sourceFileId, targetFolderId) {
