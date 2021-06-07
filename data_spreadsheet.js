@@ -7,17 +7,26 @@ function updateForm() {
   // Get the active spreadsheet
   let ss = SpreadsheetApp.getActive();
 
-  // Get the case selection question
+  // Get all relevant sheets
+  let selfRegisteredSheet = ss.getSheetByName('Self-registered cases');
+  let registrationSheet = ss.getSheetByName('Registration responses');
+  let caseWriterSheet = ss.getSheetByName('Case writing responses');
+  let weeksCasesSheet = ss.getSheetByName('Week\'s cases');
+
+  // Get the case selection question in the case writing form
   let caseSelector = form.getItems()[0].asMultipleChoiceItem();
 
-  // Extract all cases from this week and update the case selection question
-  let weeksCasesSheet = ss.getSheetByName("Week's cases");
+  // Extract all cases from this week and update the case selection question in the case writing form
   let weeksCases = weeksCasesSheet.getRange(1, 1, weeksCasesSheet.getLastRow()).getValues();
   caseSelector.setChoiceValues(weeksCases);
 
+  // Resize last row of spreadsheets to 53 pixels high for neatness
+  selfRegisteredSheet.setRowHeightsForced(selfRegisteredSheet.getLastRow(), 1, 53);
+  registrationSheet.setRowHeightsForced(registrationSheet.getLastRow(), 1, 53);
+  caseWriterSheet.setRowHeightsForced(caseWriterSheet.getLastRow(), 1, 53);
+
   // Move template immediately if case details are included on registration
   Utilities.sleep(35000);
-  let registrationSheet = ss.getSheetByName('Registration responses');
   let lastCaseDetails = registrationSheet.getRange(registrationSheet.getLastRow(),6).getValue();
   console.log('Last case details: ' + lastCaseDetails);
   if (lastCaseDetails != '') {
