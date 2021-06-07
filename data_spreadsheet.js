@@ -1,18 +1,3 @@
-function moveFiles(sourceFileId, targetFolderId) {
-  let file = DriveApp.getFileById(sourceFileId);
-  let folder = DriveApp.getFolderById(targetFolderId);
-  file.moveTo(folder);
-}
-
-function toTitleCase(str) {
-  return str.replace(
-    /\w\S*/g,
-    function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    }
-  );
-}
-
 function updateForm() {
   // https://howtogapps.com/create-an-issue-tracking-system-with-google-form-and-spreadsheet/
 
@@ -31,14 +16,14 @@ function updateForm() {
   caseSelector.setChoiceValues(weeksCases);
 
   // Move template immediately if case details are included on registration
-  Utilities.sleep(30000);
+  Utilities.sleep(35000);
   let registrationSheet = ss.getSheetByName('Registration responses');
   let lastCaseDetails = registrationSheet.getRange(registrationSheet.getLastRow(),6).getValue();
   console.log('Last case details: ' + lastCaseDetails);
   if (lastCaseDetails != '') {
     let lastCaseName = toTitleCase(registrationSheet.getRange(registrationSheet.getLastRow(),3).getValue());
     console.log('Last case name: ' + lastCaseName);
-    let matchingFiles = DriveApp.getFolderById('1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA').searchFiles("title contains '" + lastCaseName +"'");
+    let matchingFiles = DriveApp.getFolderById('1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA').searchFiles('title contains "' + lastCaseName.replace(/'/g, '\'') +'"'); // .replace function helps to escape names with single quotes
     if (matchingFiles.hasNext()) {
       let date = new Date();
       let month = Utilities.formatDate(date, 'GMT+8', 'MM');
@@ -55,4 +40,19 @@ function updateForm() {
       console.log('Failed to find file');
     }
   }
+}
+
+function moveFiles(sourceFileId, targetFolderId) {
+  let file = DriveApp.getFileById(sourceFileId);
+  let folder = DriveApp.getFolderById(targetFolderId);
+  file.moveTo(folder);
+}
+
+function toTitleCase(str) {
+  return str.replace(
+    /\w\S*/g,
+    function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    }
+  );
 }
