@@ -23,7 +23,7 @@ function updateForm() {
   // Resize last two rows of spreadsheets to 53 pixels high for neatness
   selfRegisteredSheet.setRowHeightsForced(selfRegisteredSheet.getLastRow() - 1, 2, 53);
   registrationSheet.setRowHeightsForced(registrationSheet.getLastRow() - 1, 2, 53);
-  caseWriterSheet.setRowHeightsForced(caseWriterSheet.getLastRow() - 1, 2, 53);
+  caseWriterSheet.setRowHeightsForced(caseWriterSheet.getLastRow(), 1, 53);
 }
 
 function moveFiles(sourceFileId, targetFolderId) {
