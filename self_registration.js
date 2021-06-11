@@ -120,6 +120,8 @@ function emailOnSubmit(e) {
     htmlBody: mailBody,
     replyTo: mailSenderReplyTo,
   });
+
+  console.log('New MPS customer: ' + name);
 }
 
 function toTitleCase(str) {
@@ -128,13 +130,11 @@ function toTitleCase(str) {
   });
 }
 
-function fixAddress(str) { // Fixes block numbers like '182a Rivervale Crescent'
-  return str.replace(
-    /\d{1,4}[a-z]{1}\b/g,
-    function(txt) {
-      return txt.toUpperCase();
-    }
-  )
+function fixAddress(str) {
+  // Fixes block numbers like '182a Rivervale Crescent'
+  return str.replace(/\d{1,4}[a-z]{1}\b/g, function (txt) {
+    return txt.toUpperCase();
+  });
 }
 
 function fixedEncodeURIComponent(str) {

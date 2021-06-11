@@ -94,10 +94,10 @@ function onFormSubmit(e) {
   // Move files to appropriate folder depending on whether case details are provided
   if (caseDetails != '') { // Move directly to 'Drafts' folder
     moveFiles(newTempFile.getId(), '1SB1Y_5P2Kc-oIPAvzeIs3aurqIpT4BzP');
-    console.log('Created ' + caseName + ' in \'Drafts\'');
+    console.log('Created \'' + caseName + '\' in \'Drafts\'');
   } else { // Move to 'Registered' folder
     moveFiles(newTempFile.getId(), '1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA');
-    console.log('Created ' + caseName + ' in \'Registered\'');
+    console.log('Created \'' + caseName + '\' in \'Registered\'');
   }
 }
 

@@ -18,6 +18,7 @@ function onFormSubmit(e) {
   // Save and close the open document and move it to 'Drafts' folder
   openDoc.saveAndClose();
   moveFiles(workingDoc.getId(), '1SB1Y_5P2Kc-oIPAvzeIs3aurqIpT4BzP');
+  console.log('Updated \'' + workingDoc.getName() + '\' with case details');
 }
 
 function moveFiles(sourceFileId, targetFolderId) {
