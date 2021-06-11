@@ -1,38 +1,21 @@
-function moveFiles(sourceFileId, targetFolderId) {
-  let file = DriveApp.getFileById(sourceFileId);
-  let folder = DriveApp.getFolderById(targetFolderId);
-  file.moveTo(folder);
-}
-
-function toTitleCase(str) {
-  return str.replace(
-    /\w\S*/g,
-    function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    }
-  );
-}
-
 function onFormSubmit(e) {
-  //https://howtogapps.com/google-form-script-to-autofill-and-email-a-doc-template/
-  
-  //Get today's year and month
-  let date = new Date();
-  let month = Utilities.formatDate(date, 'GMT+8', 'MM');
-  let year = Utilities.formatDate(date, 'GMT+8', 'yyyy');
+  // Inspired by: https://howtogapps.com/google-form-script-to-autofill-and-email-a-doc-template/
 
-  //Template handling
+  // Case sheet template handling
   let templateDoc = DriveApp.getFileById('10taSkDqvqppcGIOPfvYWTpdBrROQmRsgkoA5eRDKwGc');
   let newTempFile = templateDoc.makeCopy(); //create a copy
   let openDoc = DocumentApp.openById(newTempFile.getId()); //open the new template document for editing
   let body = openDoc.getBody();
   let firstFooter = openDoc.getFooter().getParent().getChild(4);
+
+  // Data spreadsheet handling
+  let ss = SpreadsheetApp.openById('1oUv4buU-IFAy9wqTDmdF_7eF40p8uTU_X8u16ujVKYU');
+  const registrationSheet = ss.getSheetByName('Registration responses');
   
-  //Get the responses triggered by On Form Submit
+  // Get the responses triggered by onFormSubmit
   let items = e.response.getItemResponses();
 
-  //assign all form responses to variables
-  //items[0].getResponse() is the first response in the Form
+  // Assign all form responses to variables
   let queueNumber = items[0].getResponse().padStart(2, '0'); //pads queue number to 2 digits
   let name = items[1].getResponse();
   let nric = items[2].getResponse()[0] + '####' + items[2].getResponse().slice(5);
@@ -43,7 +26,18 @@ function onFormSubmit(e) {
   let emailAddress = items[7].getResponse();
   let caseDetails = items[8].getResponse();
 
-  //gendered responses
+  // Find case number
+  let caseNumber = '';
+  const registrationLastRow = registrationSheet.getLastRow();
+  let lastCaseNumber = parseInt(registrationSheet.getRange(registrationLastRow,1).getValue().slice(2));
+  let lastCaseName = registrationSheet.getRange(registrationLastRow,3).getValue();
+  if (lastCaseName == toTitleCase(name)) {
+    caseNumber = 'RV' + (lastCaseNumber).toString().padStart(4, '0');
+  } else {
+    caseNumber = 'RV' + (lastCaseNumber + 1).toString().padStart(4, '0');
+  }
+
+  // Gendered responses
   let title = '';
   let sheHe = '';
   let herHim = '';
@@ -64,8 +58,14 @@ function onFormSubmit(e) {
     herHim = 'them';
     herHis = 'their';
   }
+
+  // Get today's year and month
+  let date = new Date();
+  let month = Utilities.formatDate(date, 'GMT+8', 'MM');
+  let year = Utilities.formatDate(date, 'GMT+8', 'yyyy');
   
-  //find and replace text in the letter body
+  // Find and replace text in the letter body
+  body.replaceText('{{Case_number}}', caseNumber);
   body.replaceText('{{Q}}', queueNumber);
   body.replaceText('{{Name}}', toTitleCase(name));
   body.replaceText('{{Name_Caps}}', name.toUpperCase());
@@ -78,16 +78,49 @@ function onFormSubmit(e) {
   body.replaceText('{{she_he}}', sheHe);
   body.replaceText('{{her_him}}', herHim);
   body.replaceText('{{her_his}}', herHis);
-  if (caseDetails != "") {
+  if (caseDetails != '') {
     body.replaceText('{{Case_details}}', caseDetails);
   }
   firstFooter.replaceText('{{Name}}', toTitleCase(name));
-  firstFooter.replaceText('{{Address}}', toTitleCase(address));
+  firstFooter.replaceText('{{Address}}', fixAddress(toTitleCase(address)));
   firstFooter.replaceText('{{Phone_number}}', phoneNumber);  
   firstFooter.replaceText('{{Email_address}}', emailAddress.toLowerCase());
   
-  //Save and Close the open document and set the name
+  // Save and close the open document and set the name
   openDoc.saveAndClose();
-  newTempFile.setName('Agency' + year + month + 'RV####(subject)-' + toTitleCase(name));
-  moveFiles(newTempFile.getId(), '1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA');
+  const caseName = 'Agency' + year + month + caseNumber + '(subject)-' + toTitleCase(name);
+  newTempFile.setName(caseName);
+
+  // Move files to appropriate folder depending on whether case details are provided
+  if (caseDetails != '') { // Move directly to 'Drafts' folder
+    moveFiles(newTempFile.getId(), '1SB1Y_5P2Kc-oIPAvzeIs3aurqIpT4BzP');
+    console.log('Created ' + caseName + ' in \'Drafts\'');
+  } else { // Move to 'Registered' folder
+    moveFiles(newTempFile.getId(), '1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA');
+    console.log('Created ' + caseName + ' in \'Registered\'');
+  }
+}
+
+function moveFiles(sourceFileId, targetFolderId) {
+  let file = DriveApp.getFileById(sourceFileId);
+  let folder = DriveApp.getFolderById(targetFolderId);
+  file.moveTo(folder);
+}
+
+function toTitleCase(str) {
+  return str.replace(
+    /\w\S*/g,
+    function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    }
+  );
+}
+
+function fixAddress(str) { // Fixes block numbers like '182a Rivervale Crescent'
+  return str.replace(
+    /\d{1,4}[a-z]{1}\b/g,
+    function(txt) {
+      return txt.toUpperCase();
+    }
+  )
 }

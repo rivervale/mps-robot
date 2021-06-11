@@ -1,14 +1,13 @@
 function emailOnSubmit(e) {
-  // Get the responses triggered by On Form Submit
+  // Get the responses triggered by onFormSubmit
   let items = e.response.getItemResponses();
 
   // Assign all form responses to variables
-  // items[0].getResponse() is the first response in the Form
   let name = toTitleCase(items[0].getResponse().trim());
   let nric = items[1].getResponse();
   let nricCensored =
     items[1].getResponse()[0] + '####' + items[1].getResponse().slice(5);
-  let address = items[2].getResponse().trim();
+  let address = fixAddress(toTitleCase(items[2].getResponse().trim()));
   let gender = items[3].getResponse();
   let phoneNumber = items[4].getResponse();
   let emailAddress = items[5].getResponse().toLowerCase();
@@ -17,11 +16,11 @@ function emailOnSubmit(e) {
   let supportingDocs = items[8].getResponse().slice(0, 3);
 
   // Link to spreadsheet with case responses
-  let caseResponsesUrl =
+  const caseResponsesUrl =
     'https://docs.google.com/spreadsheets/d/1oUv4buU-IFAy9wqTDmdF_7eF40p8uTU_X8u16ujVKYU/edit#gid=1588694449';
 
   // Generate case acceptance link for use later
-  let acceptCaseUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfF6b96fzmTvVrSEcR_iDnp-eYhcTBZYdwSYxv-FtldchdyMQ/viewform?usp=pp_url&entry.259633438=${name.replace(
+  const acceptCaseUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfF6b96fzmTvVrSEcR_iDnp-eYhcTBZYdwSYxv-FtldchdyMQ/viewform?usp=pp_url&entry.259633438=${name.replace(
     / /g,
     '+'
   )}&entry.496077513=${nric}&entry.1209782293=${gender.replace(
@@ -127,6 +126,15 @@ function toTitleCase(str) {
   return str.replace(/\w\S*/g, function (txt) {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
   });
+}
+
+function fixAddress(str) { // Fixes block numbers like '182a Rivervale Crescent'
+  return str.replace(
+    /\d{1,4}[a-z]{1}\b/g,
+    function(txt) {
+      return txt.toUpperCase();
+    }
+  )
 }
 
 function fixedEncodeURIComponent(str) {
