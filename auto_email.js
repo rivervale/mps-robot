@@ -5,6 +5,7 @@ function autoEmail() {
   const folderIdSent = '1EFxENHZJSFoLdBlg-j-Zyu57JBpoA-k9'; // Sent folder
 
   // Constants
+  const emailFromName = 'CHUA Kheng Wee Louis';
   const emailAddressMP = 'khengwee.chua@wp.sg';
   const emailAddressSA = 'andrelowwy@gmail.com';
   const emailRegex = '([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z0-9_-]+)';
@@ -97,7 +98,7 @@ function autoEmail() {
 
     // Send email no. 1 to the agency
     MailApp.sendEmail({
-      name: 'CHUA Kheng Wee Louis',
+      name: emailFromName,
       subject: mailSubject,
       to: mailAgency,
       htmlBody: mailAgencyBody,
@@ -137,7 +138,7 @@ function autoEmail() {
     // If resident has an email, email the resident. If resident has no email, create a PDF in '5. Print and CC by post' folder. Then move original file to 'Sent' folder.
     if (mailResident) {
       MailApp.sendEmail({ // Send email no. 2 to the resident
-        name: 'CHUA Kheng Wee Louis',
+        name: emailFromName,
         subject: mailSubject,
         to: mailResident,
         htmlBody: mailResidentBody,
@@ -167,6 +168,7 @@ function autoEmail() {
     cc: emailAddressSA,
     htmlBody: mailLog,
   });
+  console.log('Execution log sent');
 
   // Consolidate all PDFs generated in '5. Print and CC by post' folder and send an alert to the SA
   let matchingFilesPrint = DriveApp.getFolderById(
@@ -186,6 +188,7 @@ function autoEmail() {
       body: 'Please print and CC the resident(s) by post',
       attachments: matchingFilesPrintAccumulator,
     });
+    console.log('SA alerted that hard copies need to be printed and posted');
   }
 }
 
