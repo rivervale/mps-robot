@@ -1,0 +1,36 @@
+// Self-registered cases 'Accept case' formula
+=ARRAYFORMULA(
+    IF(LEN(C$2:C),
+        IF( 
+            $D$2:$D < IFNA(VLOOKUP(C2:C,SORT('Registration responses'!$D$2:$E,2,FALSE),2,FALSE),$D$2:$D),
+            "Accepted",
+            HYPERLINK(
+                SUBSTITUTE(
+                    "https://docs.google.com/forms/d/e/1FAIpQLSfF6b96fzmTvVrSEcR_iDnp-eYhcTBZYdwSYxv-FtldchdyMQ/viewform?usp=pp_url" &
+                    "&entry.259633438=" & TRIM(PROPER($B$2:$B)) &
+                    "&entry.496077513=" & $C$2:$C &
+                    "&entry.1209782293=" & $J$2:$J &
+                    "&entry.529557127=" & ENCODEURL(TRIM($I$2:$I)) &
+                    "&entry.1922153968=" & $G$2:$G &
+                    "&entry.1807123632=" & LOWER($H$2:$H) &
+                    "&entry.501929772=" & ENCODEURL(TRIM($E$2:$E)),
+                    " ",
+                    "+"
+                ),
+            "Accept case")
+        ),
+    )
+)
+
+// Registration case number allocation formula
+=ARRAYFORMULA(
+    IF(ISBLANK($E$2:$E),
+        IFERROR(1/0),
+        "RV" & TEXT (ROW (L1:INDEX(E:E, COUNTA(E:E) - 1)) + 830, "0000")
+    )
+)
+
+// This week's cases formula
+=IFNA(FILTER('Registration responses'!$L$2:$L,(TODAY()-TO_DATE(DATEVALUE('Registration responses'!$E$2:$E))<7),ISBLANK('Registration responses'!$F$2:$F)),"No cases this week")
+=IFNA(FILTER('Registration responses'!$A$2:$A,(TODAY()-TO_DATE(DATEVALUE('Registration responses'!$E$2:$E))<7),ISBLANK('Registration responses'!$F$2:$F)),"")
+=IFNA(FILTER('Registration responses'!$C$2:$C,(TODAY()-TO_DATE(DATEVALUE('Registration responses'!$E$2:$E))<7),ISBLANK('Registration responses'!$F$2:$F)),"")
