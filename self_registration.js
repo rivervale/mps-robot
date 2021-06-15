@@ -7,7 +7,7 @@ function emailOnSubmit(e) {
   let nric = items[1].getResponse();
   let nricCensored =
     items[1].getResponse()[0] + '####' + items[1].getResponse().slice(5);
-  let address = fixAddress(toTitleCase(items[2].getResponse().trim()));
+  let address = nukeBlk(fixAddress(toTitleCase(items[2].getResponse().trim())));
   let gender = items[3].getResponse();
   let phoneNumber = items[4].getResponse();
   let emailAddress = items[5].getResponse().toLowerCase();
@@ -130,11 +130,14 @@ function toTitleCase(str) {
   });
 }
 
-function fixAddress(str) {
-  // Fixes block numbers like '182a Rivervale Crescent'
+function fixAddress(str) { // Fixes alphanumeric block numbers like '182a Rivervale Crescent'
   return str.replace(/\d{1,4}[a-z]{1}\b/g, function (txt) {
     return txt.toUpperCase();
   });
+}
+
+function nukeBlk(str) { // Removes the words 'Blk' or 'Block' in addresses because I hate it
+  return str.replace(/\b[bB][lL]([oO][cC])?[kK]\s+\b/g, '');
 }
 
 function fixedEncodeURIComponent(str) {
