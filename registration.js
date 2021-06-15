@@ -78,16 +78,21 @@ function onFormSubmit(e) {
   body.replaceText('{{she_he}}', sheHe);
   body.replaceText('{{her_him}}', herHim);
   body.replaceText('{{her_his}}', herHis);
-  if (caseDetails != '') {
-    body.replaceText('{{Case_details}}', caseDetails);
-  }
   firstFooter.replaceText('{{Name}}', toTitleCase(name));
-  firstFooter.replaceText('{{Address}}', fixAddress(toTitleCase(address)));
+  firstFooter.replaceText('{{Address}}', nukeBlk(fixAddress(toTitleCase(address))));
   firstFooter.replaceText('{{Phone_number}}', phoneNumber);  
   firstFooter.replaceText('{{Email_address}}', emailAddress.toLowerCase());
+  openDoc.saveAndClose(); // Save and close to flush updates and avoid weird errors
+
+  // If case details provided input case details
+  if (caseDetails != '') {
+    openDoc2 = DocumentApp.openById(newTempFile.getId());
+    body2 = openDoc2.getBody();
+    body2.replaceText('{{Case_details}}', caseDetails);
+    openDoc2.saveAndClose();
+  }
   
-  // Save and close the open document and set the name
-  openDoc.saveAndClose();
+  // Set the name
   const caseName = 'Agency' + year + month + caseNumber + '(subject)-' + toTitleCase(name);
   newTempFile.setName(caseName);
 
@@ -116,11 +121,15 @@ function toTitleCase(str) {
   );
 }
 
-function fixAddress(str) { // Fixes block numbers like '182a Rivervale Crescent'
+function fixAddress(str) { // Fixes alphanumeric block numbers like '182a Rivervale Crescent'
   return str.replace(
     /\d{1,4}[a-z]{1}\b/g,
     function(txt) {
       return txt.toUpperCase();
     }
   )
+}
+
+function nukeBlk(str) { // Removes the words 'Blk' or 'Block' in addresses because I hate it
+  return str.replace(/\b[bB][lL]([oO][cC])?[kK]\s+\b/g, '');
 }
