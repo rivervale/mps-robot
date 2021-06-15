@@ -19,7 +19,7 @@ function autoEmail() {
     Sengkang GRC (Rivervale)<br></strong>
     --
   </p>
-  <p><em style='font-size = 9pt'>This message and any attachment are confidential and may be privileged or otherwise protected from disclosure. If you are not the intended recipient, please contact the sender and delete this message and any attachment from your system.  If you are not the intended recipient you must not copy this message or attachment or disclose the contents to any other person.</em></p>
+  <p><em style='font-size = 9pt'>This message and any attachment are confidential and may be privileged or otherwise protected from disclosure. If you are not the intended recipient, please contact the sender and delete this message and any attachment from your system. If you are not the intended recipient you must not copy this message or attachment or disclose the contents to any other person.</em></p>
   `;
   const mailResidentBody = `<p>Dear resident,</p>
   <p>Please find attached a copy of the letter of appeal I have written on your behalf which has already been sent to the relevant agency.</p>
@@ -31,7 +31,7 @@ function autoEmail() {
     Sengkang GRC (Rivervale)<br></strong>
     --
   </p>
-  <p><em style='font-size = 9pt'>This message and any attachment are confidential and may be privileged or otherwise protected from disclosure. If you are not the intended recipient, please contact the sender and delete this message and any attachment from your system.  If you are not the intended recipient you must not copy this message or attachment or disclose the contents to any other person.</em></p>
+  <p><em style='font-size = 9pt'>This message and any attachment are confidential and may be privileged or otherwise protected from disclosure. If you are not the intended recipient, please contact the sender and delete this message and any attachment from your system. If you are not the intended recipient you must not copy this message or attachment or disclose the contents to any other person.</em></p>
   `;
 
   // Initialising variables
