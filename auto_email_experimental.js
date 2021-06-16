@@ -82,7 +82,7 @@ function autoEmail() {
       `; // mailLogs subject line
     }
 
-    // Search for agency email new
+    // Search for agency email only in front matter
     let bodyEmailSearchRange = workingDoc.newRange().addElementsBetween(workingDocBody.getChild(1), bodySubjectRangeElement.getElement()).build().getRangeElements();
     for (const element of bodyEmailSearchRange) {
       email = element.getElement().findText(emailRegex);
@@ -101,32 +101,17 @@ function autoEmail() {
       `; // mailLogs agency's email
     }
 
-/*
-    // Search for agency email old
-    bodyEmailRangeElement = workingDocBody.findText(emailRegex);
-    if (bodyEmailRangeElement) {
-      mailAgency = bodyEmailRangeElement
-        .getElement()
-        .getText()
-        .slice(
-          bodyEmailRangeElement.getStartOffset(),
-          bodyEmailRangeElement.getEndOffsetInclusive() + 1
-        );
-      console.log('To: ' + mailAgency); // Logs agency's email
-      mailLog += `<td>${mailAgency}</td>
-      `; // mailLogs agency's email
+    // If agency has an email, email the agency
+    if (mailAgency) {
+      MailApp.sendEmail({
+        name: emailFromName,
+        subject: mailSubject,
+        to: mailAgency,
+        htmlBody: mailAgencyBody,
+        attachments: [workingDoc.getAs('application/pdf')],
+      });
     }
-*/
-/*
-    // Send email no. 1 to the agency
-    MailApp.sendEmail({
-      name: emailFromName,
-      subject: mailSubject,
-      to: mailAgency,
-      htmlBody: mailAgencyBody,
-      attachments: [workingDoc.getAs('application/pdf')],
-    });
-*/
+
     // Search for resident's email
     footerEmailRangeElement = workingDocFooter.findText(emailRegex);
     if (footerEmailRangeElement) {
@@ -155,7 +140,7 @@ function autoEmail() {
       </tr>
       `; // mailLogs resident's email
     }
-/*
+
     // Censor agency email address in PDF for resident
     if (bodyEmailRangeElement) {
       bodyEmailRangeElement.getElement().asText().setLinkUrl(null);
@@ -163,7 +148,7 @@ function autoEmail() {
     }
     workingDoc.saveAndClose();
 
-    // If resident has an email, email the resident. If resident has no email, create a PDF in '5. Print and CC by post' folder. Then move original file to 'Sent' folder.
+    // If resident has an email, email the resident
     if (mailResident) {
       MailApp.sendEmail({ // Send email no. 2 to the resident
         name: emailFromName,
@@ -172,11 +157,16 @@ function autoEmail() {
         htmlBody: mailResidentBody,
         attachments: [workingDoc.getAs('application/pdf')],
       });
-    } else {
+    }
+    
+    // If either or both emails are missing, create a PDF
+    if (!mailAgency || !mailResident) {
       DriveApp.getFolderById(folderIdPrintAndCcByPost).createFile( // Create PDF for printing
         workingDoc.getAs('application/pdf')
       );
     }
+
+    // Move original file to 'Sent' folder
     moveFiles(workingFile.getId(), folderIdSent);
 
     // Restore agency email address
@@ -184,9 +174,9 @@ function autoEmail() {
       workingDoc = DocumentApp.openById(workingFile.getId());
       workingDocBody = workingDoc.getBody();
       workingDocBody.replaceText('----------', mailAgency);
-    }*/
+    }
   }
-/*
+
   // Send a log to the MP, CC the SA
   mailLog += '</table>'; // Closes off the mailLog HTML
   MailApp.sendEmail({
@@ -217,7 +207,7 @@ function autoEmail() {
       attachments: matchingFilesPrintAccumulator,
     });
     console.log('SA alerted that hard copies need to be printed and posted');
-  }*/
+  }
 }
 
 function moveFiles(sourceFileId, targetFolderId) {
