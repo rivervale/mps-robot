@@ -51,6 +51,7 @@ function autoEmail() {
   let workingFile;
   let workingDoc;
   let workingDocBody;
+  let workingDocFooter;
   let bodyEmailRangeElement;
   let bodySubjectRangeElement;
   let footerEmailRangeElement;
@@ -117,12 +118,18 @@ function autoEmail() {
         );
       if (mailResident == emailAddressMP) {
         mailResident = null;
+        console.log('No resident email found, PDF copy will be prepared for printing');
+        mailLog += `<td>No email found</td>
+        </tr>
+        `; // mailLogs resident's email
+      } else {
+        console.log('Cc: ' + mailResident); // Logs resident's email
+        mailLog += `<td>${mailResident}</td>
+        </tr>
+        `; // mailLogs resident's email
       }
-      console.log('Cc: ' + mailResident); // Logs resident's email
-      mailLog += `<td>${mailResident}</td>
-      </tr>
-      `; // mailLogs resident's email
     } else {
+      console.log('No resident email found, PDF copy will be prepared for printing');
       mailLog += `<td>No email found</td>
       </tr>
       `; // mailLogs resident's email
