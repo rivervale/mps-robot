@@ -32,11 +32,13 @@ function moveFiles(sourceFileId, targetFolderId) {
   file.moveTo(folder);
 }
 
-function toTitleCase(str) {
-  return str.replace(
-    /\w\S*/g,
-    function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+function toTitleCase(string, ignore=['a', 'an', 'and', 'at', 'but', 'by', 'for', 'in', 'nor', 'of', 'on', 'or', 'out', 'so', 'the', 'to', 'up', 'yet']) {
+  ignore = new Set(ignore);
+  return string.replace(/\w+/g, (word, i) => {
+    word = word.toLowerCase();
+    if (i && ignore.has(word)) {
+      return word;
     }
-  );
-}
+    return word[0].toUpperCase() + word.slice(1);
+  });
+};
