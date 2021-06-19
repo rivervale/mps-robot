@@ -25,20 +25,3 @@ function updateForm() {
   registrationSheet.setRowHeightsForced(registrationSheet.getLastRow() - 1, 2, 53);
   caseWriterSheet.setRowHeightsForced(caseWriterSheet.getLastRow(), 1, 53);
 }
-
-function moveFiles(sourceFileId, targetFolderId) {
-  let file = DriveApp.getFileById(sourceFileId);
-  let folder = DriveApp.getFolderById(targetFolderId);
-  file.moveTo(folder);
-}
-
-function toTitleCase(string, ignore=['a', 'an', 'and', 'at', 'but', 'by', 'for', 'in', 'nor', 'of', 'on', 'or', 'out', 'so', 'the', 'to', 'up', 'yet']) {
-  ignore = new Set(ignore);
-  return string.replace(/\w+/g, (word, i) => {
-    word = word.toLowerCase();
-    if (i && ignore.has(word)) {
-      return word;
-    }
-    return word[0].toUpperCase() + word.slice(1);
-  });
-};
