@@ -82,7 +82,7 @@ function autoEmail() {
   // Iterate through each file
   while (matchingFilesSend.hasNext()) {
     // Declaring variables
-    let mailSubject = '';
+    let mailSubject = 'Appeal for Assistance';
     let mailAgency = '';
     let mailResident = '';
     
