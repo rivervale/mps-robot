@@ -35,7 +35,6 @@ function emailOnSubmit(e) {
 
   // Email a summary when someone fills in the form
   let mailRecipients = 'khengwee.chua@wp.sg';
-  let mailRecipientsBcc = 'andrelowwy@gmail.com, rivervale.wp@gmail.com';
   let mailSubject = 'New MPS customer: ' + name;
   let mailSenderName = 'MPS Robot';
   let mailSenderReplyTo = 'khengwee.chua@wp.sg';
@@ -116,7 +115,6 @@ function emailOnSubmit(e) {
 
   MailApp.sendEmail(mailRecipients, mailSubject, '', {
     name: mailSenderName,
-    bcc: mailRecipientsBcc,
     htmlBody: mailBody,
     replyTo: mailSenderReplyTo,
   });
