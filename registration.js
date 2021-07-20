@@ -29,9 +29,9 @@ function onFormSubmit(e) {
   // Find case number
   let caseNumber = '';
   const registrationLastRow = registrationSheet.getLastRow();
-  let lastCaseNumber = parseInt(registrationSheet.getRange(registrationLastRow,1).getValue().slice(2));
-  let lastCaseName = registrationSheet.getRange(registrationLastRow,3).getValue();
-  if (lastCaseName == toTitleCase(name)) {
+  const lastCaseNumber = parseInt(registrationSheet.getRange(registrationLastRow,1).getValue().slice(2));
+  const lastCaseName = registrationSheet.getRange(registrationLastRow,3).getValue();
+  if (lastCaseName.toLowerCase() === name.toLowerCase()) {
     caseNumber = 'RV' + (lastCaseNumber).toString().padStart(4, '0');
   } else {
     caseNumber = 'RV' + (lastCaseNumber + 1).toString().padStart(4, '0');
@@ -60,9 +60,9 @@ function onFormSubmit(e) {
   }
 
   // Get today's year and month
-  let date = new Date();
-  let month = Utilities.formatDate(date, 'GMT+8', 'MM');
-  let year = Utilities.formatDate(date, 'GMT+8', 'yyyy');
+  const date = new Date();
+  const month = Utilities.formatDate(date, 'GMT+8', 'MM');
+  const year = Utilities.formatDate(date, 'GMT+8', 'yyyy');
   
   // Find and replace text in the letter body
   body.replaceText('{{Case_number}}', caseNumber);
