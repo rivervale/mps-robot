@@ -217,7 +217,7 @@ function autoEmail() {
     }
 
     // Log in spreadsheet that case has been processed
-    foundCaseNumber = caseRange.createTextFinder(caseNumber).findNext();
+    const foundCaseNumber = caseRange.createTextFinder(caseNumber).findNext();
     if (foundCaseNumber) {
       caseRow = foundCaseNumber.getRow();      
       const cell = registrationSheet.getRange(caseRow, 13);
