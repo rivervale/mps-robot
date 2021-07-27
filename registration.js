@@ -26,8 +26,18 @@ function onFormSubmit(e) {
   let emailAddress = items[7].getResponse();
   let caseDetails = items[8].getResponse();
 
-  // Find case number
+  // Find case number (new method)
+  Utilities.sleep(2000);
   let caseNumber = '';
+  const nameRange = registrationSheet.getRange(2, 3, registrationSheet.getLastRow() - 1);
+  const foundCaseName = nameRange.createTextFinder(name).findNext();
+  if (foundCaseName) {
+    const caseNumberCell = registrationSheet.getRange(foundCaseName.getRow(), 1);
+    caseNumber = caseNumberCell.getValue();
+  }
+
+  // Find case number (old method)
+  /* let caseNumber = '';
   const registrationLastRow = registrationSheet.getLastRow();
   const lastCaseNumber = parseInt(registrationSheet.getRange(registrationLastRow,1).getValue().slice(2));
   const lastCaseName = registrationSheet.getRange(registrationLastRow,3).getValue();
@@ -35,7 +45,7 @@ function onFormSubmit(e) {
     caseNumber = 'RV' + (lastCaseNumber).toString().padStart(4, '0');
   } else {
     caseNumber = 'RV' + (lastCaseNumber + 1).toString().padStart(4, '0');
-  }
+  } */
 
   // Gendered responses
   let title = '';
@@ -86,14 +96,14 @@ function onFormSubmit(e) {
 
   // If case details provided input case details
   if (caseDetails != '') {
-    openDoc2 = DocumentApp.openById(newTempFile.getId());
-    body2 = openDoc2.getBody();
+    let openDoc2 = DocumentApp.openById(newTempFile.getId());
+    let body2 = openDoc2.getBody();
     body2.replaceText('{{Case_details}}', caseDetails);
     openDoc2.saveAndClose();
   }
   
   // Set the name
-  const caseName = 'Agency' + year + month + caseNumber + '(subject)-' + toTitleCase(name);
+  const caseName = '####' + year + month + caseNumber + '(####)-' + toTitleCase(name);
   newTempFile.setName(caseName);
 
   // Move files to appropriate folder depending on whether case details are provided
