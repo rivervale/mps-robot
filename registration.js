@@ -18,7 +18,8 @@ function onFormSubmit(e) {
   // Assign all form responses to variables
   let queueNumber = items[0].getResponse().padStart(2, '0'); //pads queue number to 2 digits
   let name = items[1].getResponse();
-  let nric = items[2].getResponse()[0] + '####' + items[2].getResponse().slice(5);
+  let nric = items[2].getResponse();
+  let nricCensored = items[2].getResponse()[0] + '####' + items[2].getResponse().slice(5);
   let dateOfBirth = items[3].getResponse();
   let gender = items[4].getResponse();
   let address = items[5].getResponse();
@@ -26,26 +27,18 @@ function onFormSubmit(e) {
   let emailAddress = items[7].getResponse();
   let caseDetails = items[8].getResponse();
 
-  // Find case number (new method)
+  // Find case numbers, including old cases
   Utilities.sleep(2000);
   let caseNumber = '';
-  const nameRange = registrationSheet.getRange(2, 3, registrationSheet.getLastRow() - 1);
-  const foundCaseName = nameRange.createTextFinder(name).findNext();
-  if (foundCaseName) {
-    const caseNumberCell = registrationSheet.getRange(foundCaseName.getRow(), 1);
-    caseNumber = caseNumberCell.getValue();
+  const nricRange = registrationSheet.getRange(2, 4, registrationSheet.getLastRow() - 1);
+  const foundCases = nricRange.createTextFinder(nric).findAll();
+  let caseNumbers = [];
+  if (foundCases) {
+    for (const foundCase of foundCases) {
+      caseNumbers.push(registrationSheet.getRange(foundCase.getRow(), 1).getValue());
+    }
   }
-
-  // Find case number (old method)
-  /* let caseNumber = '';
-  const registrationLastRow = registrationSheet.getLastRow();
-  const lastCaseNumber = parseInt(registrationSheet.getRange(registrationLastRow,1).getValue().slice(2));
-  const lastCaseName = registrationSheet.getRange(registrationLastRow,3).getValue();
-  if (lastCaseName.toLowerCase() === name.toLowerCase()) {
-    caseNumber = 'RV' + (lastCaseNumber).toString().padStart(4, '0');
-  } else {
-    caseNumber = 'RV' + (lastCaseNumber + 1).toString().padStart(4, '0');
-  } */
+  caseNumber = caseNumbers.pop(); // Pop the last found casenumber from the array
 
   // Gendered responses
   let title = '';
@@ -69,28 +62,31 @@ function onFormSubmit(e) {
     herHis = 'their';
   }
 
-  // Get today's year and month
+  // Get dates
   const date = new Date();
-  const month = Utilities.formatDate(date, 'GMT+8', 'MM');
-  const year = Utilities.formatDate(date, 'GMT+8', 'yyyy');
+  const dateMM = Utilities.formatDate(date, 'GMT+8', 'MM');
+  const dateyyyy = Utilities.formatDate(date, 'GMT+8', 'yyyy');
+  const dateddMMMMyyyy = Utilities.formatDate(date, 'GMT+8', 'dd MMMM yyyy');
   
   // Find and replace text in the letter body
+  body.replaceText('{{DateddMMMMyyyy}}', dateddMMMMyyyy);
   body.replaceText('{{Case_number}}', caseNumber);
   body.replaceText('{{Q}}', queueNumber);
   body.replaceText('{{Name}}', toTitleCase(name));
   body.replaceText('{{Name_Caps}}', name.toUpperCase());
-  body.replaceText('{{NRIC}}', nric.toUpperCase());
-  body.replaceText('{{Date_of_birth}}', dateOfBirth);  
+  body.replaceText('{{NRIC}}', nricCensored.toUpperCase());
+  body.replaceText('{{Date_of_birth}}', dateOfBirth);
+  body.replaceText('{{Previous_cases}}', (caseNumbers.length === 0 ? '' :' (prev. cases: ' + caseNumbers.toString() + ')'));
   body.replaceText('{{Gender}}', gender);
-  body.replaceText('{{Year}}', year);
-  body.replaceText('{{Month}}', month);
+  body.replaceText('{{Dateyyyy}}', dateyyyy);
+  body.replaceText('{{DateMM}}', dateMM);
   body.replaceText('{{Title}}', title);
   body.replaceText('{{she_he}}', sheHe);
   body.replaceText('{{her_him}}', herHim);
   body.replaceText('{{her_his}}', herHis);
   firstFooter.replaceText('{{Name}}', toTitleCase(name));
   firstFooter.replaceText('{{Address}}', nukeBlk(fixAddress(toTitleCase(address))));
-  firstFooter.replaceText('{{Phone_number}}', phoneNumber);  
+  firstFooter.replaceText('{{Phone_number}}', phoneNumber);
   firstFooter.replaceText('{{Email_address}}', emailAddress.toLowerCase());
   openDoc.saveAndClose(); // Save and close to flush updates and avoid weird errors
 
@@ -103,7 +99,7 @@ function onFormSubmit(e) {
   }
   
   // Set the name
-  const caseName = '####' + year + month + caseNumber + '(####)-' + toTitleCase(name);
+  const caseName = '####' + dateyyyy + dateMM + caseNumber + '(####)-' + toTitleCase(name);
   newTempFile.setName(caseName);
 
   // Move files to appropriate folder depending on whether case details are provided
