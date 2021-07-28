@@ -72,7 +72,7 @@ function autoEmail() {
       <th scope="col">Filename</th>
       <th scope="col">Subject line</th>
       <th scope="col">Agency email(s)</th>
-      <th scope="col">Resident's email</th>
+      <th scope="col">Resident's email(s)</th>
     </tr>
   `;
 
@@ -112,19 +112,19 @@ function autoEmail() {
     }
 
     // Search for agency email(s) in header
-    const agencyEmailSearchRangeElements = workingDoc.newRange().addElementsBetween(workingDocBody.getChild(1), mailSubjectRangeElement.getElement()).build().getRangeElements(); // Search range from second line to subject line
-    let foundAgencyEmailRangeElement;
-    let foundAgencyEmailsRangeElements = [];
-    let foundAgencyEmails = [];
+    const agencyEmailSearchRangeElements = workingDoc.newRange().addElementsBetween(workingDocBody.getChild(1), mailSubjectRangeElement.getElement()).build().getRangeElements(); // Create RangeElements[] for search from second line to subject line
+    let agencyEmailRangeElement;
+    let agencyEmailsRangeElements = []; // Documenting found emails for hiding later
+    let agencyEmails = []; // Documenting found emails for hiding later
     for (const rangeElement of agencyEmailSearchRangeElements) {
-      foundAgencyEmailRangeElement = rangeElement.getElement().findText(emailRegex);
-      if (foundAgencyEmailRangeElement) {
-        foundAgencyEmailsRangeElements.push(foundAgencyEmailRangeElement);
-        foundAgencyEmails.push(foundAgencyEmailRangeElement.getElement().getText());
-        mailAgency += foundAgencyEmailRangeElement.getElement().getText().slice(foundAgencyEmailRangeElement.getStartOffset(), foundAgencyEmailRangeElement.getEndOffsetInclusive() + 1) + ', ';
+      agencyEmailRangeElement = rangeElement.getElement().findText(emailRegex);
+      if (agencyEmailRangeElement) {
+        agencyEmailsRangeElements.push(agencyEmailRangeElement);
+        agencyEmails.push(agencyEmailRangeElement.getElement().getText());
+        mailAgency += agencyEmailRangeElement.getElement().getText().slice(agencyEmailRangeElement.getStartOffset(), agencyEmailRangeElement.getEndOffsetInclusive() + 1) + ', ';
       }
     }
-    mailAgency = mailAgency.trim();
+    mailAgency = mailAgency.trim(); // Trim excess whitespace
 
     // If agency has email(s), email the agency
     if (mailAgency) {
@@ -144,32 +144,36 @@ function autoEmail() {
       `;
     }
 
-    // Search for resident's email in document footer first
-    let residentEmailRangeElement = workingDocFooter.findText(emailRegex);
-    if (residentEmailRangeElement) {
-      mailResident = residentEmailRangeElement.getElement().getText().slice(residentEmailRangeElement.getStartOffset(),residentEmailRangeElement.getEndOffsetInclusive() + 1);
-      if (mailResident == emailAddressMP) {
-        mailResident = null;
+    // Search for resident's email(s)
+    let residentEmailRangeElement;
+    let residentEmailFound;
+    if (workingDocFooter.findText('Email:')) { // Search in footer first
+      const residentEmailSearchRangeElementsFooter = workingDoc.newRange().addElementsBetween(workingDocFooter.findText('Email:').getElement(), workingDocFooter.getChild(workingDocFooter.getNumChildren() - 1)).build().getRangeElements(); // Create RangeElements[] for search
+      for (const rangeElement of residentEmailSearchRangeElementsFooter) {
+        residentEmailRangeElement = rangeElement.getElement().findText(emailRegex);
+        if (residentEmailRangeElement) {
+          residentEmailFound = residentEmailRangeElement.getElement().getText().slice(residentEmailRangeElement.getStartOffset(),residentEmailRangeElement.getEndOffsetInclusive() + 1);
+          if (residentEmailFound === emailAddressMP) {
+            continue; // Check if MP's email picked up and ignore it
+          } 
+          mailResident += residentEmailFound + ', ';
+        }
       }
-    }
-    
-    // Search for resident's email in body after signature if not found earlier
-    if (!mailResident) {
-      const residentEmailSearchRangeElements = workingDoc.newRange().addElementsBetween(workingDocBody.findText('Member of Parliament for Sengkang GRC').getElement(), workingDocBody.getChild(workingDocBody.getNumChildren() - 1)).build().getRangeElements(); // Search range from after signature to end of document
-      let foundResidentEmailRangeElement;
-      let foundResidentEmailsRangeElements = [];
-      for (const rangeElement of residentEmailSearchRangeElements) {
-        foundResidentEmailRangeElement = rangeElement.getElement().findText(emailRegex);
-        if (foundResidentEmailRangeElement) {
-          foundResidentEmailsRangeElements.push(foundResidentEmailRangeElement);
-          mailResident = foundResidentEmailRangeElement.getElement().getText().slice(foundResidentEmailRangeElement.getStartOffset(), foundResidentEmailRangeElement.getEndOffsetInclusive() + 1);
+    } else if (!mailResident) { // Search in letter body after signature if not found in footer
+      const residentEmailSearchRangeElementsBody = workingDoc.newRange().addElementsBetween(workingDocBody.findText('Email:', workingDocBody.findText('Member of Parliament for Sengkang GRC')).getElement(), workingDocBody.getChild(workingDocBody.getNumChildren() - 1)).build().getRangeElements(); // Create RangeElements[] for search
+      for (const rangeElement of residentEmailSearchRangeElementsBody) {
+        residentEmailRangeElement = rangeElement.getElement().findText(emailRegex);
+        if (residentEmailRangeElement) {
+          residentEmailFound = residentEmailRangeElement.getElement().getText().slice(residentEmailRangeElement.getStartOffset(),residentEmailRangeElement.getEndOffsetInclusive() + 1);
+          mailResident += residentEmailFound + ', ';
         }
       }
     }
+    mailResident = mailResident.trim() // Trim excess whitespace
 
     // Censor agency email address in PDF for resident
     let i = 0;
-    for (const rangeElement of foundAgencyEmailsRangeElements) {
+    for (const rangeElement of agencyEmailsRangeElements) {
       i += 1;
       rangeElement.getElement().asText().setLinkUrl(null);
       rangeElement.getElement().asText().setForegroundColor('#ffffff');
@@ -177,7 +181,7 @@ function autoEmail() {
     }
     workingDoc.saveAndClose();
 
-    // If resident has an email, email the resident
+    // If resident has emails(s) email the resident
     if (mailResident) {
       MailApp.sendEmail({
         name: emailFromName,
@@ -186,7 +190,7 @@ function autoEmail() {
         htmlBody: mailResidentBody,
         attachments: [workingDoc.getAs('application/pdf')],
       });
-      console.log('Resident\'s email: ' + mailResident); // Log resident's email
+      console.log('Resident\'s email(s): ' + mailResident); // Log resident's email
       mailLog += `<td>${mailResident}</td>
       `; // mailLog resident's email
     } else {
@@ -211,7 +215,7 @@ function autoEmail() {
     workingDocBody = workingDoc.getBody();
     workingDocBody.editAsText().setForegroundColor('#000000');
     i = 0;
-    for (const email of foundAgencyEmails) {
+    for (const email of agencyEmails) {
       i += 1;
       workingDocBody.replaceText('-----' + i, email);
     }
