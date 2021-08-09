@@ -66,10 +66,10 @@ function onFormSubmit(e) {
   const date = new Date();
   const dateMM = Utilities.formatDate(date, 'GMT+8', 'MM');
   const dateyyyy = Utilities.formatDate(date, 'GMT+8', 'yyyy');
-  const dateddMMMMyyyy = Utilities.formatDate(date, 'GMT+8', 'dd MMMM yyyy');
+  const datedMMMMyyyy = Utilities.formatDate(date, 'GMT+8', 'd MMMM yyyy');
   
   // Find and replace text in the letter body
-  body.replaceText('{{DateddMMMMyyyy}}', dateddMMMMyyyy);
+  body.replaceText('{{DatedMMMMyyyy}}', datedMMMMyyyy);
   body.replaceText('{{Case_number}}', caseNumber);
   body.replaceText('{{Q}}', queueNumber);
   body.replaceText('{{Name}}', toTitleCase(name));
