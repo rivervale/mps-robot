@@ -94,7 +94,7 @@ function autoEmail() {
 
     // Identify and log case number and file name
     const fileName = workingFile.getName();
-    const caseNumber = fileName.slice(fileName.search(/\dRV\d/g) + 1, fileName.search(/\d\(/g) + 1);
+    const caseNumber = fileName.slice(0, fileName.search(/-/g));
     console.log('Case: ' + caseNumber); // Logs case number
     console.log('File: ' + fileName); // Logs file name
     mailLog += `<tr>

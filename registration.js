@@ -63,44 +63,44 @@ function onFormSubmit(e) {
   }
 
   // Get dates
-  const date = new Date();
-  const dateMM = Utilities.formatDate(date, 'GMT+8', 'MM');
-  const dateyyyy = Utilities.formatDate(date, 'GMT+8', 'yyyy');
-  const datedMMMMyyyy = Utilities.formatDate(date, 'GMT+8', 'd MMMM yyyy');
+  const dateRaw = new Date();
+  const dateYearMonth = Utilities.formatDate(dateRaw, 'GMT+8', 'yyyyMM');
+  const dateFull = Utilities.formatDate(dateRaw, 'GMT+8', 'd MMMM yyyy');
+  
+  // Generate full case reference
+  const caseRef = caseNumber + '-' + dateYearMonth + '-####';
   
   // Find and replace text in the letter body
-  body.replaceText('{{DatedMMMMyyyy}}', datedMMMMyyyy);
-  body.replaceText('{{Case_number}}', caseNumber);
-  body.replaceText('{{Q}}', queueNumber);
-  body.replaceText('{{Name}}', toTitleCase(name));
-  body.replaceText('{{Name_Caps}}', name.toUpperCase());
-  body.replaceText('{{NRIC}}', nricCensored.toUpperCase());
-  body.replaceText('{{Date_of_birth}}', dateOfBirth);
-  body.replaceText('{{Previous_cases}}', (caseNumbers.length === 0 ? '' :' (prev. cases: ' + caseNumbers.toString() + ')'));
-  body.replaceText('{{Gender}}', gender);
-  body.replaceText('{{Dateyyyy}}', dateyyyy);
-  body.replaceText('{{DateMM}}', dateMM);
-  body.replaceText('{{Title}}', title);
-  body.replaceText('{{she_he}}', sheHe);
-  body.replaceText('{{her_him}}', herHim);
-  body.replaceText('{{her_his}}', herHis);
-  firstFooter.replaceText('{{Name}}', toTitleCase(name));
-  firstFooter.replaceText('{{Address}}', nukeBlk(fixAddress(toTitleCase(address))));
-  firstFooter.replaceText('{{Phone_number}}', phoneNumber);
-  firstFooter.replaceText('{{Email_address}}', emailAddress.toLowerCase());
+  body.replaceText('{CaseReference}', caseRef);
+  body.replaceText('{Date}', dateFull);
+  body.replaceText('{CaseNumber}', caseNumber);
+  body.replaceText('{Q}', queueNumber);
+  body.replaceText('{Name}', toTitleCase(name));
+  body.replaceText('{NameCaps}', name.toUpperCase());
+  body.replaceText('{NRIC}', nricCensored.toUpperCase());
+  body.replaceText('{DOB}', dateOfBirth);
+  body.replaceText('{PreviousCases}', (caseNumbers.length === 0 ? '' :' (prev. cases: ' + caseNumbers.toString() + ')'));
+  body.replaceText('{Gender}', gender);
+  body.replaceText('{Title}', title);
+  body.replaceText('{SheHe}', sheHe);
+  body.replaceText('{HerHim}', herHim);
+  body.replaceText('{HerHis}', herHis);
+  firstFooter.replaceText('{Name}', toTitleCase(name));
+  firstFooter.replaceText('{Address}', nukeBlk(fixAddress(toTitleCase(address))));
+  firstFooter.replaceText('{PhoneNumber}', phoneNumber);
+  firstFooter.replaceText('{EmailAddress}', emailAddress.toLowerCase());
   openDoc.saveAndClose(); // Save and close to flush updates and avoid weird errors
 
   // If case details provided input case details
   if (caseDetails != '') {
     let openDoc2 = DocumentApp.openById(newTempFile.getId());
     let body2 = openDoc2.getBody();
-    body2.replaceText('{{Case_details}}', caseDetails);
+    body2.replaceText('{CaseDetails}', caseDetails);
     openDoc2.saveAndClose();
   }
   
-  // Set the name
-  const caseName = '####' + dateyyyy + dateMM + caseNumber + '(####)-' + toTitleCase(name);
-  newTempFile.setName(caseName);
+  // Set the filename
+  newTempFile.setName(caseRef + ': ' + toTitleCase(name));
 
   // Move files to appropriate folder depending on whether case details are provided
   if (caseDetails != '') { // Move directly to 'Drafts' folder
