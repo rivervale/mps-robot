@@ -17,7 +17,7 @@ function onFormSubmit(e) {
 
   // Assign all form responses to variables
   let queueNumber = items[0].getResponse().padStart(2, '0'); //pads queue number to 2 digits
-  let name = items[1].getResponse();
+  let name = nukeAlias(items[1].getResponse());
   let nric = items[2].getResponse();
   let nricCensored = items[2].getResponse()[0] + '####' + items[2].getResponse().slice(5);
   let dateOfBirth = items[3].getResponse();
@@ -144,4 +144,8 @@ function fixAddress(str) { // Fixes alphanumeric block numbers like '182a Riverv
 
 function nukeBlk(str) { // Removes the words 'Blk' or 'Block' in addresses because I hate it
   return str.replace(/\b[bB][lL]([oO][cC])?[kK]\s+\b/g, '');
+}
+
+function nukeAlias(str) { //Removes aliases from names as they are extraneous for our purposes
+  return str.replace(/\b\s?((\((\s*\b\w+\b\s*)+\))|(@(\s*\b\w+\b\s*)+))/g, '');
 }
