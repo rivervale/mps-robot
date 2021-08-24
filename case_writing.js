@@ -5,6 +5,7 @@ function onFormSubmit(e) {
   // Assign all form responses to variables
   let name = toTitleCase(items[0].getResponse().slice(32));
   let caseDetails = items[1].getResponse();
+  let caseWriter = items[2].getResponse();
 
   // Document handling
   let files = DriveApp.getFolderById('1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA').searchFiles('title contains "' + name.replace(/'/g, '\'') +'"'); // .replace function helps to escape names with single quotes
@@ -13,7 +14,8 @@ function onFormSubmit(e) {
   let body = openDoc.getBody();
   
   // Insert case details into existing letter body
-  body.replaceText('{{Case_details}}', caseDetails);
+  body.replaceText('{CaseWriter}', ' (Written by: ' + caseWriter + ')');
+  body.replaceText('{CaseDetails}', caseDetails);
   
   // Save and close the open document and move it to 'Drafts' folder
   openDoc.saveAndClose();
