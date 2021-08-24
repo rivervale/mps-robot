@@ -31,7 +31,7 @@
 )
 
 // This week's cases summary formula
-=ARRAYFORMULA(IF(ISBLANK($E$2:$E),IFERROR(1/0),CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(TEXT($A$2:$A,"RV0000"),"; Q: "),TEXT($B$2:$B,"00")),"; ID: —"),RIGHT($D$2:$D,4)),"; Name: "),$C$2:$C)))
+=ARRAYFORMULA(IF(ISBLANK($E$2:$E),IFERROR(1/0),CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(TEXT($A$2:$A,"RV0000"),"; Q: "),TEXT($B$2:$B,"00")),"; ID: —"),RIGHT($D$2:$D,4)),"; Name: "),LEFT($C$2:$C, SEARCH(" ",$C$2:$C,1)-1))))
 
 // This week's cases formula
 =IFNA(FILTER('Registration responses'!$L$2:$L,(TODAY()-TO_DATE(DATEVALUE('Registration responses'!$E$2:$E))<7),ISBLANK('Registration responses'!$F$2:$F)),"No cases this week")
