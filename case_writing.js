@@ -3,12 +3,12 @@ function onFormSubmit(e) {
   let items = e.response.getItemResponses();
 
   // Assign all form responses to variables
-  let name = toTitleCase(items[0].getResponse().slice(32));
+  let caseNumber = toTitleCase(items[0].getResponse().slice(0,6));
   let caseDetails = items[1].getResponse();
   let caseWriter = items[2].getResponse();
 
   // Document handling
-  let files = DriveApp.getFolderById('1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA').searchFiles('title contains "' + name.replace(/'/g, '\'') +'"'); // .replace function helps to escape names with single quotes
+  let files = DriveApp.getFolderById('1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA').searchFiles('title contains "' + caseNumber +'"');
   let workingDoc = files.next();
   let openDoc = DocumentApp.openById(workingDoc.getId()); //open the doc for editing
   let body = openDoc.getBody();
