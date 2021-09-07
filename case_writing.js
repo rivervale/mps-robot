@@ -13,7 +13,7 @@ function onFormSubmit(e) {
   const caseWriter = items[2].getResponse();
 
   // Searching for the case sheet
-  const files = DriveApp.getFolderById(folderIdRegistered).searchFiles('title contains "' + caseNumber +'"'); // Search the 'Registered' folder for the case sheet by case number (e.g. 'RV1000')
+  const files = DriveApp.getFolderById(folderIdRegistered).searchFiles("title contains '" + caseNumber +"'"); // Search the 'Registered' folder for the case sheet by case number (e.g. 'RV1000')
   console.log('Searching for case:', caseNumber);
   try {
     let workingDoc = files.next(); // Select the first matching case sheet
