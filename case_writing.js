@@ -1,4 +1,9 @@
 function onFormSubmit(e) {
+  // Folder IDs
+  const folderIdRegistered = '1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA'; // Registered folder
+  const folderIdConsulting = '108hMH7ak3V2I8v5FkvMy2h7aB4QxShKb'; // Consulting folder
+  const folderIdDrafts =     '1SB1Y_5P2Kc-oIPAvzeIs3aurqIpT4BzP'; // Drafts folder
+
   // Get the responses triggered by onFormSubmit
   let items = e.response.getItemResponses();
 
@@ -8,9 +13,9 @@ function onFormSubmit(e) {
   let caseWriter = items[2].getResponse();
 
   // Document handling
-  let files = DriveApp.getFolderById('1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA').searchFiles('title contains "' + caseNumber +'"');
-  let workingDoc = files.next();
-  let openDoc = DocumentApp.openById(workingDoc.getId()); //open the doc for editing
+  let files = DriveApp.getFolderById(folderIdRegistered).searchFiles('title contains "' + caseNumber +'"'); // Search the 'Registered' folder for the case sheet by case number (e.g. 'RV1000')
+  let workingDoc = files.next(); // Select the first matching case sheet
+  let openDoc = DocumentApp.openById(workingDoc.getId()); // Open the case sheet for editing
   let body = openDoc.getBody();
   
   // Insert case details into existing letter body
@@ -19,7 +24,7 @@ function onFormSubmit(e) {
   
   // Save and close the open document and move it to 'Drafts' folder
   openDoc.saveAndClose();
-  moveFiles(workingDoc.getId(), '1SB1Y_5P2Kc-oIPAvzeIs3aurqIpT4BzP');
+  moveFiles(workingDoc.getId(), folderIdDrafts);
   console.log('Updated \'' + workingDoc.getName() + '\' with case details');
 }
 
