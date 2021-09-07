@@ -8,7 +8,7 @@ function onFormSubmit(e) {
   let items = e.response.getItemResponses();
 
   // Assign all form responses to variables
-  let caseNumber = toTitleCase(items[0].getResponse().slice(0,6));
+  let caseNumber = toTitleCase(items[0].getResponse().slice(0,6)); // Extracts the case number (first 6 characters) from a string with format resembling "RV1000; Q: 01; ID: —123A; Name: Tan"
   let caseDetails = items[1].getResponse();
   let caseWriter = items[2].getResponse();
 
