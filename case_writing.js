@@ -8,13 +8,22 @@ function onFormSubmit(e) {
   let items = e.response.getItemResponses();
 
   // Assign all form responses to variables
-  let caseNumber = toTitleCase(items[0].getResponse().slice(0,6)); // Extracts the case number (first 6 characters) from a string with format resembling 'RV1000; Q: 01; ID: —123A; Name: Tan'
-  let caseDetails = items[1].getResponse();
-  let caseWriter = items[2].getResponse();
+  const caseNumber = toTitleCase(items[0].getResponse().slice(0,6)); // Extracts the case number (first 6 characters) from a string with format resembling 'RV1000; Q: 01; ID: —123A; Name: Tan'
+  const caseDetails = items[1].getResponse();
+  const caseWriter = items[2].getResponse();
+
+  // Searching for the case sheet
+  const files = DriveApp.getFolderById(folderIdRegistered).searchFiles('title contains "' + caseNumber +'"'); // Search the 'Registered' folder for the case sheet by case number (e.g. 'RV1000')
+  console.log('Searching for case:', caseNumber);
+  try {
+    let workingDoc = files.next(); // Select the first matching case sheet
+  } catch (error) { // Error handling if no matching case sheet found
+    console.log('Case not found:', caseNumber);
+    console.log(error);
+    return; // End function
+  }
 
   // Document handling
-  let files = DriveApp.getFolderById(folderIdRegistered).searchFiles('title contains "' + caseNumber +'"'); // Search the 'Registered' folder for the case sheet by case number (e.g. 'RV1000')
-  let workingDoc = files.next(); // Select the first matching case sheet
   let openDoc = DocumentApp.openById(workingDoc.getId()); // Open the case sheet for editing
   let body = openDoc.getBody();
   
@@ -22,10 +31,10 @@ function onFormSubmit(e) {
   body.replaceText('{CaseWriter}', ' (Written by: ' + caseWriter + ')');
   body.replaceText('{CaseDetails}', caseDetails);
   
-  // Save and close the open document and move it to 'Drafts' folder
+  // Save and close the open document and move it to 'Consulting' folder
   openDoc.saveAndClose();
-  moveFiles(workingDoc.getId(), folderIdDrafts);
-  console.log('Updated \'' + workingDoc.getName() + '\' with case details');
+  moveFiles(workingDoc.getId(), folderIdConsulting);
+  console.log('Updated with case details:', workingDoc.getName());
 }
 
 function moveFiles(sourceFileId, targetFolderId) {
