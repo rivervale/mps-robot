@@ -1,15 +1,22 @@
 function onFormSubmit(e) {
   // Inspired by: https://howtogapps.com/google-form-script-to-autofill-and-email-a-doc-template/
 
+  // Folder and file IDs
+  const folderIdRegistered =      '1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA'; // Registered folder
+  const folderIdConsulting =      '108hMH7ak3V2I8v5FkvMy2h7aB4QxShKb'; // Consulting folder
+  const folderIdDrafts =          '1SB1Y_5P2Kc-oIPAvzeIs3aurqIpT4BzP'; // Drafts folder
+  const fileIdCaseSheetTemplate = '10taSkDqvqppcGIOPfvYWTpdBrROQmRsgkoA5eRDKwGc'; // Case sheet template
+  const fileIdMpsData =           '1oUv4buU-IFAy9wqTDmdF_7eF40p8uTU_X8u16ujVKYU'; // Data spreadsheet
+
   // Case sheet template handling
-  let templateDoc = DriveApp.getFileById('10taSkDqvqppcGIOPfvYWTpdBrROQmRsgkoA5eRDKwGc');
+  let templateDoc = DriveApp.getFileById(fileIdCaseSheetTemplate);
   let newTempFile = templateDoc.makeCopy(); //create a copy
   let openDoc = DocumentApp.openById(newTempFile.getId()); //open the new template document for editing
   let body = openDoc.getBody();
   let firstFooter = openDoc.getFooter().getParent().getChild(4);
 
   // Data spreadsheet handling
-  let ss = SpreadsheetApp.openById('1oUv4buU-IFAy9wqTDmdF_7eF40p8uTU_X8u16ujVKYU');
+  let ss = SpreadsheetApp.openById(fileIdMpsData);
   const registrationSheet = ss.getSheetByName('Registration responses');
   
   // Get the responses triggered by onFormSubmit
@@ -104,10 +111,10 @@ function onFormSubmit(e) {
 
   // Move files to appropriate folder depending on whether case details are provided
   if (caseDetails != '') { // Move directly to 'Drafts' folder
-    moveFiles(newTempFile.getId(), '1SB1Y_5P2Kc-oIPAvzeIs3aurqIpT4BzP');
+    moveFiles(newTempFile.getId(), folderIdDrafts);
     console.log('Created \'' + caseName + '\' in \'Drafts\'');
   } else { // Move to 'Registered' folder
-    moveFiles(newTempFile.getId(), '1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA');
+    moveFiles(newTempFile.getId(), folderIdRegistered);
     console.log('Created \'' + caseName + '\' in \'Registered\'');
   }
 }
