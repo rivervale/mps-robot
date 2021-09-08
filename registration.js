@@ -128,7 +128,7 @@ function moveFiles(sourceFileId, targetFolderId) {
 function toTitleCase(string, ignore=['a', 'an', 'and', 'at', 'but', 'by', 'for', 'in', 'nor', 'of', 'on', 'or', 'out', 'so', 'the', 'to', 'up', 'yet'], caps=['SKTC', 'S&CC', 'NRIC', 'HDB', 'BTO', 'SBF', 'MOP', 'CPF', 'MSF', 'SSO', 'FSC', 'ICA', 'PR', 'LTVP', 'STVP', 'EP', 'FDW', 'SPF', 'TP', 'LTA', 'PMD', 'TPE', 'KPE', 'SLE', 'CTE', 'LRT', 'MRT', 'MOH', 'SKH', 'ACE', 'MOM', 'WSG', 'TADM', 'TAFEP']) {
   ignore = new Set(ignore);
   caps = new Set(caps);
-  return string.replace(/\w+/g, (word, i) => {
+  return string.replace(/\w\S*/g, (word, i) => {
     if (i && caps.has(word)) {
       return word;
     }
