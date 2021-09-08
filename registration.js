@@ -110,9 +110,9 @@ function onFormSubmit(e) {
   newTempFile.setName(caseRef + ': ' + toTitleCase(name));
 
   // Move files to appropriate folder depending on whether case details are provided
-  if (caseDetails != '') { // Move directly to 'Drafts' folder
-    moveFiles(newTempFile.getId(), folderIdDrafts);
-    console.log('Created \'' + caseName + '\' in \'Drafts\'');
+  if (caseDetails != '') { // Move directly to 'Consulting' folder
+    moveFiles(newTempFile.getId(), folderIdConsulting);
+    console.log('Created \'' + caseName + '\' in \'Consulting\'');
   } else { // Move to 'Registered' folder
     moveFiles(newTempFile.getId(), folderIdRegistered);
     console.log('Created \'' + caseName + '\' in \'Registered\'');
