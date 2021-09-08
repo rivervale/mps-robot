@@ -107,7 +107,8 @@ function onFormSubmit(e) {
   }
   
   // Set the filename
-  newTempFile.setName(caseRef + ': ' + toTitleCase(name));
+  const caseName = caseRef + ': ' + toTitleCase(name);
+  newTempFile.setName(caseName);
 
   // Move files to appropriate folder depending on whether case details are provided
   if (caseDetails != '') { // Move directly to 'Consulting' folder
