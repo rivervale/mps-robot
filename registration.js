@@ -82,9 +82,9 @@ function onFormSubmit(e) {
   body.replaceText('{Date}', dateFull);
   body.replaceText('{CaseNumber}', caseNumber);
   body.replaceText('{Q}', queueNumber);
-  body.replaceText('{Name}', toTitleCase(name));
-  body.replaceText('{NameCaps}', name.toUpperCase());
-  body.replaceText('{NRIC}', nricCensored.toUpperCase());
+  body.replaceText('{Name}', toTitleCase(name).trim());
+  body.replaceText('{NameCaps}', name.toUpperCase().trim());
+  body.replaceText('{NRIC}', nricCensored.toUpperCase().trim());
   body.replaceText('{DOB}', dateOfBirth);
   body.replaceText('{PreviousCases}', (caseNumbers.length === 0 ? '' :' (prev. cases: ' + caseNumbers.toString() + ')'));
   body.replaceText('{Gender}', gender);
@@ -92,10 +92,10 @@ function onFormSubmit(e) {
   body.replaceText('{SheHe}', sheHe);
   body.replaceText('{HerHim}', herHim);
   body.replaceText('{HerHis}', herHis);
-  firstFooter.replaceText('{Name}', toTitleCase(name));
+  firstFooter.replaceText('{Name}', toTitleCase(name).trim());
   firstFooter.replaceText('{Address}', nukeBlk(fixAddress(toTitleCase(address))));
-  firstFooter.replaceText('{PhoneNumber}', phoneNumber);
-  firstFooter.replaceText('{EmailAddress}', emailAddress.toLowerCase());
+  firstFooter.replaceText('{PhoneNumber}', phoneNumber.trim());
+  firstFooter.replaceText('{EmailAddress}', emailAddress.toLowerCase().trim());
   openDoc.saveAndClose(); // Save and close to flush updates and avoid weird errors
 
   // If case details provided input case details
