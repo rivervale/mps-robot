@@ -102,8 +102,8 @@ function autoEmail() {
     <td>${fileName}</td>
     `;
 
-    // Search for appeal subject
-    const mailSubjectRangeElement = workingDocBody.findText('APPEAL');
+    // Search for letter subject
+    const mailSubjectRangeElement = workingDocBody.findText('(?<=(\n|\r))(\b)(?i)(APPEAL|RE-APPEAL|REAPPEAL|FEEDBACK)');
     if (mailSubjectRangeElement) {
       mailSubject = toTitleCase(mailSubjectRangeElement.getElement().getText());
       console.log('Subject: ' + mailSubject); // Logs subject line
