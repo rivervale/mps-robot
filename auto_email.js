@@ -5,6 +5,10 @@ function autoEmail() {
   const folderIdSent = '1EFxENHZJSFoLdBlg-j-Zyu57JBpoA-k9'; // Sent folder
   const fileIdMpsData = '1oUv4buU-IFAy9wqTDmdF_7eF40p8uTU_X8u16ujVKYU'; // Data spreadsheet
 
+  // Regular expressions and search strings
+  const emailRegex = '([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z0-9_-]+)'; // Matches standard email addresses
+  const subjectLineRegex = '^(?i)appeal|feedback|re-?appeal'; // Matches subject line of letter
+
   // Emails
   const emailFromName = 'CHUA Kheng Wee Louis';
   const emailAddressMP = 'khengwee.chua@wp.sg';
@@ -36,8 +40,6 @@ function autoEmail() {
   <p>No further action is required from you and the agency will respond to you directly.</p>
   ` + mailSignature + mailDisclaimer;
 
-  // Regular expression to search for email addresses
-  const emailRegex = '([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z0-9_-]+)';
 
   // Pull files in the auto-email folder
   const matchingFilesSend = DriveApp.getFolderById(folderIdReadyToSend).getFilesByType('application/vnd.google-apps.document');
@@ -103,7 +105,7 @@ function autoEmail() {
     `;
 
     // Search for letter subject
-    const mailSubjectRangeElement = workingDocBody.findText('(?<=(\n|\r))(\b)(?i)(APPEAL|RE-APPEAL|REAPPEAL|FEEDBACK)');
+    const mailSubjectRangeElement = workingDocBody.findText(subjectLineRegex);
     if (mailSubjectRangeElement) {
       mailSubject = toTitleCase(mailSubjectRangeElement.getElement().getText());
       console.log('Subject: ' + mailSubject); // Logs subject line
