@@ -5,6 +5,10 @@ function autoEmail() {
   const folderIdSent = '1EFxENHZJSFoLdBlg-j-Zyu57JBpoA-k9'; // Sent folder
   const fileIdMpsData = '1oUv4buU-IFAy9wqTDmdF_7eF40p8uTU_X8u16ujVKYU'; // Data spreadsheet
 
+  // Regular expressions and search strings
+  const emailRegex = '([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z0-9_-]+)'; // Matches standard email addresses
+  const subjectLineRegex = '^(?i)appeal|feedback|re-?appeal'; // Matches subject line of letter
+
   // Emails
   const emailFromName = 'CHUA Kheng Wee Louis';
   const emailAddressMP = 'khengwee.chua@wp.sg';
@@ -36,8 +40,6 @@ function autoEmail() {
   <p>No further action is required from you and the agency will respond to you directly.</p>
   ` + mailSignature + mailDisclaimer;
 
-  // Regular expression to search for email addresses
-  const emailRegex = '([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z0-9_-]+)';
 
   // Pull files in the auto-email folder
   const matchingFilesSend = DriveApp.getFolderById(folderIdReadyToSend).getFilesByType('application/vnd.google-apps.document');
@@ -102,8 +104,8 @@ function autoEmail() {
     <td>${fileName}</td>
     `;
 
-    // Search for appeal subject
-    const mailSubjectRangeElement = workingDocBody.findText('APPEAL');
+    // Search for letter subject
+    const mailSubjectRangeElement = workingDocBody.findText(subjectLineRegex);
     if (mailSubjectRangeElement) {
       mailSubject = toTitleCase(mailSubjectRangeElement.getElement().getText());
       console.log('Subject: ' + mailSubject); // Logs subject line
@@ -271,7 +273,7 @@ function moveFiles(sourceFileId, targetFolderId) {
 function toTitleCase(string, ignore=['a', 'an', 'and', 'at', 'but', 'by', 'for', 'in', 'nor', 'of', 'on', 'or', 'out', 'so', 'the', 'to', 'up', 'yet'], caps=['SKTC', 'S&CC', 'NRIC', 'HDB', 'BTO', 'SBF', 'MOP', 'CPF', 'MSF', 'SSO', 'FSC', 'ICA', 'PR', 'LTVP', 'STVP', 'EP', 'FDW', 'SPF', 'TP', 'LTA', 'PMD', 'TPE', 'KPE', 'SLE', 'CTE', 'LRT', 'MRT', 'MOH', 'SKH', 'ACE', 'MOM', 'WSG', 'TADM', 'TAFEP']) {
   ignore = new Set(ignore);
   caps = new Set(caps);
-  return string.replace(/\w+/g, (word, i) => {
+  return string.replace(/\w\S*/g, (word, i) => {
     if (i && caps.has(word)) {
       return word;
     }
