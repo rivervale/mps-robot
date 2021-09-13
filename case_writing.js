@@ -15,8 +15,9 @@ function onFormSubmit(e) {
   // Searching for the case sheet
   const files = DriveApp.getFolderById(folderIdRegistered).searchFiles("title contains '" + caseNumber +"'"); // Search the 'Registered' folder for the case sheet by case number (e.g. 'RV1000')
   console.log('Searching for case:', caseNumber);
+  let workingDoc; // Defining variable outside try/catch block so that it has function scope
   try {
-    var workingDoc = files.next(); // Select the first matching case sheet
+    workingDoc = files.next(); // Select the first matching case sheet
   } catch (error) { // Error handling if no matching case sheet found
     console.log('Case not found:', caseNumber);
     console.log(error);
