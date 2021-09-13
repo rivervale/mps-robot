@@ -45,16 +45,17 @@ function autoEmail() {
   const matchingFilesSend = DriveApp.getFolderById(folderIdReadyToSend).getFilesByType('application/vnd.google-apps.document');
 
   // Create sent folder with today's date (if it does not already exist)
+  let sentFolderDate;
   if (matchingFilesSend.hasNext()) {
     // Get today's date (yyyyMMdd)
     const formattedDate = Utilities.formatDate(new Date(), 'GMT+8', 'yyyyMMdd');
     const sentFolder = DriveApp.getFolderById(folderIdSent);
     if (sentFolder.getFoldersByName(formattedDate).hasNext()) {
       // Get the sent folder with today's date if it already exists
-      var sentFolderDate = sentFolder.getFoldersByName(formattedDate).next();
+      sentFolderDate = sentFolder.getFoldersByName(formattedDate).next();
     } else {
       // Otherwise create it
-      var sentFolderDate = sentFolder.createFolder(formattedDate);
+      sentFolderDate = sentFolder.createFolder(formattedDate);
     }
   } else {
     return; // Exit the whole function if there are no files in the auto-email folder
