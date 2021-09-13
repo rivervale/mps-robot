@@ -8,7 +8,7 @@ function onFormSubmit(e) {
   let items = e.response.getItemResponses();
 
   // Assign all form responses to variables
-  const caseNumber = toTitleCase(items[0].getResponse().slice(0,6)); // Extracts the case number (first 6 characters) from a string with format resembling 'RV1000; Q: 01; ID: —123A; Name: Tan'
+  const caseNumber = items[0].getResponse().slice(0,6); // Extracts the case number (first 6 characters) from a string with format resembling 'RV1000; Q: 01; ID: —123A; Name: Tan'
   const caseDetails = items[1].getResponse();
   const caseWriter = items[2].getResponse();
 
@@ -16,7 +16,7 @@ function onFormSubmit(e) {
   const files = DriveApp.getFolderById(folderIdRegistered).searchFiles("title contains '" + caseNumber +"'"); // Search the 'Registered' folder for the case sheet by case number (e.g. 'RV1000')
   console.log('Searching for case:', caseNumber);
   try {
-    let workingDoc = files.next(); // Select the first matching case sheet
+    var workingDoc = files.next(); // Select the first matching case sheet
   } catch (error) { // Error handling if no matching case sheet found
     console.log('Case not found:', caseNumber);
     console.log(error);
