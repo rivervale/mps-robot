@@ -31,10 +31,10 @@ function checkConsultingFolder() {
 
   // While each file iterator method has detected files, process the case sheets
   while (diagnosedCases1.hasNext()) {
-    processCaseSheets(diagnosedCases, archiveFolderDate, folderIdDrafts);
+    processCaseSheets(diagnosedCases1, archiveFolderDate, folderIdDrafts);
   }
   while (diagnosedCases2.hasNext()) {
-    processCaseSheets(diagnosedCasesAlt, archiveFolderDate, folderIdDrafts);
+    processCaseSheets(diagnosedCases2, archiveFolderDate, folderIdDrafts);
   }
 }
 
