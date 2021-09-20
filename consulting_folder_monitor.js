@@ -91,8 +91,8 @@ function weeklyTriggers() {
   ScriptApp.newTrigger('periodicTrigger')
     .timeBased()
     .onWeekDay(ScriptApp.WeekDay.MONDAY)
-    .atHour(19)
-    .nearMinute(0)
+    .atHour(18)
+    .nearMinute(30)
     .inTimezone('Asia/Singapore')
     .create();
 
@@ -101,7 +101,7 @@ function weeklyTriggers() {
     .timeBased()
     .onWeekDay(ScriptApp.WeekDay.MONDAY)
     .atHour(23)
-    .nearMinute(45)
+    .nearMinute(30)
     .inTimezone('Asia/Singapore')
     .create();
 }
