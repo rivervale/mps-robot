@@ -87,7 +87,7 @@ function moveFiles(sourceFileId, targetFolderId) {
 
 function weeklyTriggers() {
   // Run once to create the triggers
-  // Start folder monitoring at 7.00pm on Mondays
+  // Start folder monitoring at 6.30pm on Mondays
   ScriptApp.newTrigger('periodicTrigger')
     .timeBased()
     .onWeekDay(ScriptApp.WeekDay.MONDAY)
@@ -96,7 +96,7 @@ function weeklyTriggers() {
     .inTimezone('Asia/Singapore')
     .create();
 
-  // End folder monitoring at 11.45pm on Mondays
+  // End folder monitoring at 11.30pm on Mondays
   ScriptApp.newTrigger('terminatePeriodicTrigger')
     .timeBased()
     .onWeekDay(ScriptApp.WeekDay.MONDAY)
