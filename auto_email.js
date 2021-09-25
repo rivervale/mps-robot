@@ -7,7 +7,7 @@ function autoEmail() {
 
   // Regular expressions and search strings
   const emailRegex = '([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z0-9_-]+)'; // Matches standard email addresses
-  const subjectLineRegex = '^(?i)appeal|feedback|re-?appeal'; // Matches subject line of letter
+  const subjectLineRegex = '(?i)^appeal|^feedback|^re-?appeal|^urgent\sappeal|^urgent\sre-?appeal'; // Matches subject line of letter
 
   // Emails
   const emailFromName = 'CHUA Kheng Wee Louis';
