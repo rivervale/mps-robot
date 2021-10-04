@@ -6,16 +6,13 @@ function checkConsultingFolder() {
   var folderIdReadyToDraft = '1r-t8rdQv1SD2lmtHhHz0pFwAH2YKIk6R'; // Ready to draft folder
   var folderIdDrafts =       '1SB1Y_5P2Kc-oIPAvzeIs3aurqIpT4BzP'; // Drafts folder
   var folderIdArchive =      '1_JVQI0ZjCZ3MJwq1tsGrrTTFCeGr37PY'; // Case and document archive folder
-  var completedKeyword =     'mpdone'; // Keyword to mark case sheet as completed
 
   // Scan the 'Ready to Draft' sub-folder for files
-  var diagnosedCases1 = DriveApp.getFolderById(folderIdReadyToDraft).getFilesByType('application/vnd.google-apps.document');
-  // Scan the root folder for files containing 'mpdone'
-  var diagnosedCases2 = DriveApp.getFolderById(folderIdConsulting).searchFiles("fullText contains '" + completedKeyword + "'");
+  var diagnosedCases = DriveApp.getFolderById(folderIdReadyToDraft).getFilesByType('application/vnd.google-apps.document');
 
   // Create archive folder with today's date (if it does not already exist)
   var archiveFolderDate;
-  if (diagnosedCases1.hasNext() || diagnosedCases2.hasNext()) {
+  if (diagnosedCases.hasNext()) {
     var today = Utilities.formatDate(new Date(), 'GMT+8', 'yyyyMMdd'); // Get today's date (yyyyMMdd)
     var archiveFolder = DriveApp.getFolderById(folderIdArchive);
     if (archiveFolder.getFoldersByName(today).hasNext()) {
@@ -30,18 +27,18 @@ function checkConsultingFolder() {
   }
 
   // While each file iterator method has detected files, process the case sheets
-  while (diagnosedCases1.hasNext()) {
-    processCaseSheets(diagnosedCases1, archiveFolderDate, folderIdDrafts);
-  }
-  while (diagnosedCases2.hasNext()) {
-    processCaseSheets(diagnosedCases2, archiveFolderDate, folderIdDrafts);
+  while (diagnosedCases.hasNext()) {
+    processCaseSheets(diagnosedCases, archiveFolderDate, folderIdDrafts);
   }
 }
 
 function processCaseSheets(fileIterator, archiveFolder, draftsFolder) {
-  // Reusable function to move case sheets to archive folder and create a copy in drafts folder for driving
+  // Reusable function to move case sheets to archive folder and create a drafting template in the drafts folder
+  
+  // Constants
+  var nfaKeyword = 'NFA'; // Keyword to mark case as NFA (i.e. no further action required)
+
   var caseSheet = fileIterator.next();
-  var draftingTemplate = caseSheet.makeCopy(); // Create a copy of the case sheet to act as the drafting template
 
   var caseRef = caseSheet.getName(); // E.g. 'RV1000-202109-####: Tan Ah Seng'
   var caseRefTruncated = caseRef.slice(0, 13) + caseRef.slice(18); // E.g. 'RV1000-202109: Tan Ah Seng'
@@ -49,6 +46,12 @@ function processCaseSheets(fileIterator, archiveFolder, draftsFolder) {
   moveFiles(caseSheet.getId(), archiveFolder.getId()); // Move original case sheet to the archive folder with today's date
   caseSheet.setName(caseRefTruncated); // Rename the case sheet to remove '-####' from the file name
 
+  if (DocumentApp.openById(caseSheet.getId()).getBody().findText(nfaKeyword)) { // Check if case is of the 'No Further Action' variety
+    console.log ('Processed', caseRefTruncated, '(no further action)')
+    return; // If so, the function can end here; no need to create a drafting template
+  }
+
+  var draftingTemplate = caseSheet.makeCopy(); // Create a copy of the case sheet to act as the drafting template
   moveFiles(draftingTemplate.getId(), draftsFolder); // Move the drafting template to the 'Drafts' folder
   draftingTemplate.setName(caseRef); // Rename the drafting template to remove 'Copy of' from the file name
 
