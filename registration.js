@@ -5,7 +5,7 @@ function onFormSubmit(e) {
   const folderIdRegistered =      '1dsuxBMlKSjxJsAbrmMpzVKB-XhrOVIMA'; // Registered folder
   const folderIdConsulting =      '108hMH7ak3V2I8v5FkvMy2h7aB4QxShKb'; // Consulting folder
   const folderIdDrafts =          '1SB1Y_5P2Kc-oIPAvzeIs3aurqIpT4BzP'; // Drafts folder
-  const fileIdCaseSheetTemplate = '10taSkDqvqppcGIOPfvYWTpdBrROQmRsgkoA5eRDKwGc'; // Case sheet template
+  const fileIdCaseSheetTemplate = '19RtkEjabQ9QAeqQJQ1yI1F911KRSjdDsNJxKfYf6JXM'; // Case sheet template
   const fileIdMpsData =           '1oUv4buU-IFAy9wqTDmdF_7eF40p8uTU_X8u16ujVKYU'; // Data spreadsheet
 
   // Case sheet template handling
