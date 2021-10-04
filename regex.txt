@@ -2,7 +2,7 @@ NRIC:
 ^[ST]\d{7}[A-Z]$
 
 Address (online self-registration, Rivervale only):
-(Rivervale (Drive|Dr|Street|St|Crescent|Cres|Lane|Ln|Walk|Wlk|Wk|Wl)|Punggol (Road|Rd)|Sengkang (East|E) (Avenue|Ave|Way|Wy|Drive|Dr)|(Saint|St|St\.) (Anne's|Annes|Annes') (Wood|Wd)).*((\n|\r).*)+(Singapore (53|54|55|82)\d{4})$
+(Rivervale (Drive|Dr|Street|St|Crescent|Cres)|Sengkang (East|E) (Way|Wy)|(Saint|St|St\.) (Anne's|Annes|Annes') (Wood|Wd)).*((\n|\r).*)+(Singapore (53|54|55|82)\d{4})$
 
 Address (in-person, all of Sengkang GRC):
 .*(Rivervale|Compassvale|Buangkok|Anchorvale|Sengkang|Punggol Road|Punggol Rd|Saint Anne's|St Anne's).*(\n|\r)+.*(\n|\r)*.*(\n|\r)*(Singapore \d{6})
