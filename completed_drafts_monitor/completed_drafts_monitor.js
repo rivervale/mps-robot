@@ -1,4 +1,4 @@
-function completedDraftsMonitoring() {
+function completedDraftsMonitor() {
   // Constants
   const folderIdDrafts = '1SB1Y_5P2Kc-oIPAvzeIs3aurqIpT4BzP'; // Drafts folder
   const folderIdSaReview = '1qYWTyZ4MqivXVVQEJRXwpGvcBKWz1B4b'; // SA Review folder
