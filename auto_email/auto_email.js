@@ -4,6 +4,7 @@ function autoEmail() {
   const folderIdPrintAndPost = '1B0jD5r8tSZZ8_1djhx2-MQa8g1fm35Wm'; // Print and post folder
   const folderIdSent = '1EFxENHZJSFoLdBlg-j-Zyu57JBpoA-k9'; // Sent folder
   const fileIdMpsData = '1oUv4buU-IFAy9wqTDmdF_7eF40p8uTU_X8u16ujVKYU'; // Data spreadsheet
+  const signatureImg = DriveApp.getFileById('1JHkO7Eyw9iwSm1aXcjPRnEJMBED5B5ZD'); // Louis' signature
 
   // Regular expressions and search strings
   const emailRegex = '([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z0-9_-]+)'; // Matches standard email addresses
@@ -67,7 +68,7 @@ function autoEmail() {
   const caseRange = registrationSheet.getRange(2, 1, registrationSheet.getLastRow() - 1);
 
   // Rolling log to be emailed at the end after execution
-  let mailLog = `<h1>MPS Robot Auto-Email Log</h1>
+  let mailLog = `<h1>Virtual Kiwi Auto-Email Log</h1>
   <p>The following emails were successfully sent</p>
   <table border='1' style='border-collapse: collapse;'>
     <tr>
@@ -93,7 +94,7 @@ function autoEmail() {
     const workingFile = matchingFilesSend.next();
     let workingDoc = DocumentApp.openById(workingFile.getId());
     let workingDocBody = workingDoc.getBody();
-    const workingDocFooter = workingDoc.getFooter().getParent().getChild(4);
+    let workingDocFooter = workingDoc.getFooter().getParent().getChild(4);
 
     // Identify and log case number and file name
     const fileName = workingFile.getName();
@@ -129,6 +130,10 @@ function autoEmail() {
     }
     mailAgency = mailAgency.trim(); // Trim excess whitespace
 
+    // Add signature
+    replaceTextWithImage(workingDocBody, '{Signature}', signatureImg);
+    workingDoc.saveAndClose();
+
     // If agency has email(s), email the agency
     if (mailAgency) {
       MailApp.sendEmail({
@@ -148,6 +153,9 @@ function autoEmail() {
     }
 
     // Search for resident's email(s)
+    workingDoc = DocumentApp.openById(workingFile.getId());
+    workingDocBody = workingDoc.getBody();
+    workingDocFooter = workingDoc.getFooter().getParent().getChild(4);
     let residentEmailRangeElement;
     let residentEmailFound;
     if (workingDocFooter.findText('Email:')) { // Search in footer first
@@ -285,3 +293,39 @@ function toTitleCase(string, ignore=['a', 'an', 'and', 'at', 'but', 'by', 'for',
     return word[0].toUpperCase() + word.slice(1);
   });
 };
+
+/**
+ * Replaces a document text with an image file. It replaces the entire paragraph.
+ * Based on https://gist.github.com/tanaikech/f84831455dea5c394e48caaee0058b26
+ * Based on https://stackoverflow.com/questions/69119206/replace-text-placeholder-with-image-using-google-apps-script
+ * 
+ * @param {DocumentApp.Body} body Body of the file. Where to replace in.
+ * @param {string} text Text to replace.
+ * @param {DriveApp.File} imgFile Image as a file.
+ * @param {number} [width] Optional width to set to the image.
+ */
+ function replaceTextWithImage(body, text, imgFile, width) {
+  let next = body.findText(text);
+  if (!next) return;
+  const r = next.getElement()
+  // Remove text
+  r.asText().setText("")
+  // Add image
+  const image = r.getParent().asParagraph().insertInlineImage(0, imgFile.getBlob())
+  // Resize if width given
+  if (width != null) {
+    setImageWidth(image, width)
+  }
+  return next;
+}
+
+/**
+ * Sets an image size based on its width.
+ * @param {DocumentApp.Image|DocumentApp.InlineImage} image Image to apply.
+ * @param {number} width Width to set
+ */
+ function setImageWidth(image, width) {
+  const ratio = image.getHeight() / image.getWidth()
+  image.setWidth(width)
+  image.setHeight(width * ratio)
+}
