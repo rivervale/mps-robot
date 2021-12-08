@@ -90,11 +90,19 @@ function autoEmail() {
     let mailAgency = '';
     let mailResident = '';
     
-    // Identify elements within file
+    // Open file and identify body element
     const workingFile = matchingFilesSend.next();
     let workingDoc = DocumentApp.openById(workingFile.getId());
     let workingDocBody = workingDoc.getBody();
-    let workingDocFooter = workingDoc.getFooter().getParent().getChild(4);
+
+    // Add signature, save and close to ensure changes are applied, then reopen and retag body element
+    replaceTextWithImage(workingDocBody, '{Signature}', signatureImg);
+    workingDoc.saveAndClose();
+    workingDoc = DocumentApp.openById(workingFile.getId());
+    workingDocBody = workingDoc.getBody();
+
+    // Identify footer element
+    const workingDocFooter = workingDoc.getFooter().getParent().getChild(4);
 
     // Identify and log case number and file name
     const fileName = workingFile.getName();
@@ -130,10 +138,6 @@ function autoEmail() {
     }
     mailAgency = mailAgency.trim(); // Trim excess whitespace
 
-    // Add signature
-    replaceTextWithImage(workingDocBody, '{Signature}', signatureImg);
-    workingDoc.saveAndClose();
-
     // If agency has email(s), email the agency
     if (mailAgency) {
       MailApp.sendEmail({
@@ -153,9 +157,6 @@ function autoEmail() {
     }
 
     // Search for resident's email(s)
-    workingDoc = DocumentApp.openById(workingFile.getId());
-    workingDocBody = workingDoc.getBody();
-    workingDocFooter = workingDoc.getFooter().getParent().getChild(4);
     let residentEmailRangeElement;
     let residentEmailFound;
     if (workingDocFooter.findText('Email:')) { // Search in footer first
