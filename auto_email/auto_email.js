@@ -7,7 +7,7 @@ function autoEmail() {
 
   // Regular expressions and search strings
   const emailRegex = '([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+.[a-zA-Z0-9_-]+)'; // Matches standard email addresses
-  const subjectLineRegex = '(?i)^appeal|^feedback|^re-?appeal|^urgent appeal|^urgent re-?appeal'; // Matches subject line of letter
+  const subjectLineRegex = '(?i)^appeal|^feedback|^re-?appeal|^urgent appeal|^urgent re-?appeal|^application'; // Matches subject line of letter
 
   // Emails
   const emailFromName = 'CHUA Kheng Wee Louis';
@@ -67,7 +67,7 @@ function autoEmail() {
   const caseRange = registrationSheet.getRange(2, 1, registrationSheet.getLastRow() - 1);
 
   // Rolling log to be emailed at the end after execution
-  let mailLog = `<h1>MPS Robot Auto-Email Log</h1>
+  let mailLog = `<h1>Virtual Kiwi Auto-Email Log</h1>
   <p>The following emails were successfully sent</p>
   <table border='1' style='border-collapse: collapse;'>
     <tr>
@@ -239,7 +239,7 @@ function autoEmail() {
   // Send a log to the MP
   mailLog += '</table>'; // Closes off the mailLog HTML
   MailApp.sendEmail({
-    name: 'MPS Robot',
+    name: 'Virtual Kiwi',
     subject: 'Auto email script successfully executed',
     to: emailAddressMP,
     htmlBody: mailLog,
@@ -252,7 +252,7 @@ function autoEmail() {
     matchingFilesPrintAccumulator.push(matchingFilesPrint.next().getAs('application/pdf'));
   }
   MailApp.sendEmail({
-    name: 'MPS Robot',
+    name: 'Virtual Kiwi',
     subject: `Auto email script executed${matchingFilesPrintAccumulator.length != 0 ? `, ${matchingFilesPrintAccumulator.length} file(s) to print` : ''}`,
     to: emailAddressSA,
     htmlBody: mailLog + `${matchingFilesPrintAccumulator.length != 0 ? `<p>Attached: ${matchingFilesPrintAccumulator.length} file(s) to print</p>` : ''}`,
