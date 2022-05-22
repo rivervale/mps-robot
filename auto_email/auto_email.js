@@ -12,6 +12,7 @@ function autoEmail() {
 
   // Emails
   const emailFromName = 'CHUA Kheng Wee Louis';
+  const emailAddressMPS = 'rivervale.sengkang@wp.sg';
   const emailAddressMP = 'khengwee.chua@wp.sg';
   const emailAddressSA = 'andrelowwy@gmail.com';
 
@@ -165,8 +166,8 @@ function autoEmail() {
         residentEmailRangeElement = rangeElement.getElement().findText(emailRegex);
         if (residentEmailRangeElement) {
           residentEmailFound = residentEmailRangeElement.getElement().getText().slice(residentEmailRangeElement.getStartOffset(),residentEmailRangeElement.getEndOffsetInclusive() + 1);
-          if (residentEmailFound === emailAddressMP) {
-            continue; // Check if MP's email picked up and ignore it
+          if (residentEmailFound === emailAddressMPS) {
+            continue; // Check if MPS email address is picked up and ignore it
           } 
           mailResident += residentEmailFound + ', ';
         }
