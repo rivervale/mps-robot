@@ -29,7 +29,7 @@ function onFormSubmit(e) {
   let body = openDoc.getBody();
   
   // Insert case details into existing letter body
-  body.replaceText('{CaseWriter}', ' (Written by: ' + caseWriter + ')');
+  body.replaceText('{CaseWriter}', caseWriter);
   body.replaceText('{CaseDetails}', caseDetails);
   
   // Save and close the open document and move it to 'Consulting' folder

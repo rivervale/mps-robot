@@ -86,7 +86,7 @@ function onFormSubmit(e) {
   body.replaceText('{NameCaps}', name.toUpperCase().trim());
   body.replaceText('{NRIC}', nricCensored.toUpperCase().trim());
   body.replaceText('{DOB}', dateOfBirth);
-  body.replaceText('{PreviousCases}', (caseNumbers.length === 0 ? '' :' (prev. cases: ' + caseNumbers.toString() + ')'));
+  body.replaceText('{PreviousCases}', (caseNumbers.length === 0 ? '' :' (prev.: ' + caseNumbers.toString() + ')'));
   body.replaceText('{Gender}', gender);
   body.replaceText('{Title}', title);
   body.replaceText('{SheHe}', sheHe);
@@ -102,6 +102,8 @@ function onFormSubmit(e) {
   if (caseDetails != '') {
     let openDoc2 = DocumentApp.openById(newTempFile.getId());
     let body2 = openDoc2.getBody();
+    body2.replaceText('Queue no. 00', 'Online case') // Replace 'queue no.' line if online case
+    body2.replaceText('{CaseWriter}', 'Resident') // Replace 'case writer' line if online case
     body2.replaceText('{CaseDetails}', caseDetails);
     openDoc2.saveAndClose();
   }
