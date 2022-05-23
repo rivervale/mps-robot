@@ -19,6 +19,7 @@ function autoEmail() {
   // Email signature
   const mailSignature = `<p>
     --<br>
+    <em>Sent by the Rivervale MPS team on behalf of</em><br>
     Chua Kheng Wee Louis<br>
     <strong>Member of Parliament<br>
     Sengkang GRC (Rivervale)<br></strong>
@@ -27,21 +28,20 @@ function autoEmail() {
   `;
 
   // Email disclaimer
-  const mailDisclaimer = `<p><em style='font-size = 9pt'>This message and any attachment are confidential and may be privileged or otherwise protected from disclosure. If you are not the intended recipient, please contact the sender and delete this message and any attachment from your system. If you are not the intended recipient you must not copy this message or attachment or disclose the contents to any other person.</em></p>
+  const mailDisclaimer = `<p><em style='font-size = 9pt'>This message and any attachment(s) are confidential and may be privileged or otherwise protected from disclosure. If you are not the intended recipient, please contact the sender and delete this message and any attachment(s) from your system. If you are not the intended recipient you must not copy this message or attachment(s) or disclose the contents to any other person.</em></p>
   `;
 
   // Email sent to agencies
-  const mailAgencyBody = `<p>Dear Sir/Madam,</p>
-  <p>Please find attached a letter I have written on behalf of my constituent.</p>
-  <p>For your assistance please.</p>
+  const mailAgencyBody = `<p>To whom it may concern,</p>
+  <p>Please find attached a letter I have written on behalf of my constituent.</p>
+  <p>For your assistance please.</p>
   ` + mailSignature + mailDisclaimer;
 
   // Email sent to residents
-  const mailResidentBody = `<p>Dear resident,</p>
-  <p>Please find attached a copy of the letter of appeal I have written on your behalf which has already been sent to the relevant agency.</p>
-  <p>No further action is required from you and the agency will respond to you directly.</p>
+  const mailResidentBody = `<p>Dear Sengkang resident,</p>
+  <p>A copy of the letter of appeal sent on your behalf is attached for your records.</p>
+  <p>No further action is required from you and the relevant agency will respond to you directly.</p>
   ` + mailSignature + mailDisclaimer;
-
 
   // Pull files in the auto-email folder
   const matchingFilesSend = DriveApp.getFolderById(folderIdReadyToSend).getFilesByType('application/vnd.google-apps.document');
