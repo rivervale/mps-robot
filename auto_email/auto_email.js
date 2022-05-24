@@ -60,7 +60,8 @@ function autoEmail() {
       sentFolderDate = sentFolder.createFolder(formattedDate);
     }
   } else {
-    return; // Exit the whole function if there are no files in the auto-email folder
+    console.log('No letters found');
+    return 'No letters found'; // Exit the whole function if there are no files in the auto-email folder
   }
 
   // Open data spreadsheet
@@ -272,7 +273,13 @@ function autoEmail() {
   // Completion log
   console.log(`Execution complete
 Sent: ${counter} email(s)${matchingFilesPrintAccumulator.length != 0 ? `
-To print: ${matchingFilesPrintAccumulator.length} letter(s)` : ''}`)
+To print: ${matchingFilesPrintAccumulator.length} letter(s)` : ''}`);
+  return `Execution complete<br>Sent: ${counter} email(s)${matchingFilesPrintAccumulator.length != 0 ? `<br>To print: ${matchingFilesPrintAccumulator.length} letter(s)` : ''}`;
+}
+
+function doGet() {
+  executionLog = autoEmail();
+  return HtmlService.createHtmlOutput(executionLog);
 }
 
 function moveFiles(sourceFileId, targetFolderId) {
