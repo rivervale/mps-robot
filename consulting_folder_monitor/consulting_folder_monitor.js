@@ -48,7 +48,7 @@ function checkConsultingFolder() {
 
 function processCaseSheets(fileIterator, archiveFolder, draftsFolder) {
   // Reusable function to move case sheets to archive folder and create a drafting template in the drafts folder
-  
+
   // Constants
   var nfaKeyword = 'NFA'; // Keyword to mark case as NFA (i.e. no further action required)
 
@@ -82,7 +82,7 @@ function processSupportingDocs(fileIterator, archiveFolder, draftsFolder) {
   moveFiles(supportingDoc.getId(), archiveFolder.getId()); // Move original supporting doc to the archive folder with today's date
   var supportingDocCopy = supportingDoc.makeCopy(); // Create a copy of the supporting doc
   moveFiles(supportingDocCopy.getId(), draftsFolder); // Move the copied supporting doc to the 'Drafts' folder
-  draftingTemplate.setName(supportingDocRef); // Rename the copied supporting doc to remove 'Copy of' from the file name
+  supportingDocCopy.setName(supportingDocRef); // Rename the copied supporting doc to remove 'Copy of' from the file name
 
   console.log('Processed supporting doc', supportingDocRef);
 }
