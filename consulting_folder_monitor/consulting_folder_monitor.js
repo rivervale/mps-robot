@@ -9,6 +9,9 @@ function checkConsultingFolder() {
 
   // Scan the 'Ready to Draft' sub-folder for files
   var diagnosedCases = DriveApp.getFolderById(folderIdReadyToDraft).getFilesByType('application/vnd.google-apps.document');
+  var supportingDocsPdf = DriveApp.getFolderById(folderIdReadyToDraft).getFilesByType('application/pdf');
+  var supportingDocsJpeg = DriveApp.getFolderById(folderIdReadyToDraft).getFilesByType('image/jpeg');
+  var supportingDocsPng = DriveApp.getFolderById(folderIdReadyToDraft).getFilesByType('image/png');
 
   // Create archive folder with today's date (if it does not already exist)
   var archiveFolderDate;
@@ -29,6 +32,17 @@ function checkConsultingFolder() {
   // While each file iterator method has detected files, process the case sheets
   while (diagnosedCases.hasNext()) {
     processCaseSheets(diagnosedCases, archiveFolderDate, folderIdDrafts);
+  }
+
+  // While supporting docs remaing, process supporting docs
+  while (supportingDocsPdf.hasNext()) {
+    processSupportingDocs(supportingDocsPdf, archiveFolderDate, folderIdDrafts);
+  }
+  while (supportingDocsJpeg.hasNext()) {
+    processSupportingDocs(supportingDocsJpeg, archiveFolderDate, folderIdDrafts);
+  }
+  while (supportingDocsPng.hasNext()) {
+    processSupportingDocs(supportingDocsPng, archiveFolderDate, folderIdDrafts);
   }
 }
 
@@ -56,6 +70,21 @@ function processCaseSheets(fileIterator, archiveFolder, draftsFolder) {
   draftingTemplate.setName(caseRef); // Rename the drafting template to remove 'Copy of' from the file name
 
   console.log('Processed', caseRefTruncated);
+}
+
+function processSupportingDocs(fileIterator, archiveFolder, draftsFolder) {
+  // Reusable function to move supporting docs to archive folder and create a copy in the drafts folder
+
+  var supportingDoc = fileIterator.next();
+
+  var supportingDocRef = supportingDoc.getName().slice(0, 6) + ' docs';
+
+  moveFiles(supportingDoc.getId(), archiveFolder.getId()); // Move original supporting doc to the archive folder with today's date
+  var supportingDocCopy = supportingDoc.makeCopy(); // Create a copy of the supporting doc
+  moveFiles(supportingDocCopy.getId(), draftsFolder); // Move the copied supporting doc to the 'Drafts' folder
+  draftingTemplate.setName(supportingDocRef); // Rename the copied supporting doc to remove 'Copy of' from the file name
+
+  console.log('Processed supporting doc', supportingDocRef);
 }
 
 function periodicTrigger() {
