@@ -41,6 +41,7 @@ function autoEmail() {
   const mailResidentBody = `<p>Dear Sengkang resident,</p>
   <p>A copy of the letter of appeal sent on your behalf is attached for your records.</p>
   <p>No further action is required from you and the relevant agency will respond to you directly.</p>
+  <p>The email address ${emailAddressMPS} is for outgoing correspondence only and is not monitored. If you have any further inquiries, please send them to ${emailAddressMP} instead.</p>
   ` + mailSignature + mailDisclaimer;
 
   // Pull files in the auto-email folder
@@ -201,6 +202,7 @@ function autoEmail() {
         name: emailFromName,
         subject: mailSubject,
         to: mailResident,
+        replyTo: emailAddressMP,
         htmlBody: mailResidentBody,
         attachments: [workingDoc.getAs('application/pdf')],
       });
